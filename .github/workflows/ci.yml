@@ -1,0 +1,37 @@
+name: Repository checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Check whitespace errors
+        run: git diff --check
+      - name: Validate skill frontmatter
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' file; do
+            count=$((count + 1))
+            head -n 1 "$file" | grep -qx -- '---' || {
+              echo "Missing YAML frontmatter: $file"
+              exit 1
+            }
+            awk 'NR > 1 && /^---$/ { found=1; exit } END { exit !found }' "$file" || {
+              echo "Unclosed YAML frontmatter: $file"
+              exit 1
+            }
+          done < <(find skills -name SKILL.md -print0)
+          echo "Validated frontmatter in $count skill files"
+          test "$count" -gt 0
