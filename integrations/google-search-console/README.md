@@ -25,39 +25,37 @@ There is no Cloudflare Worker, D1 database, always-on server or Cloudflare secre
 
 The ranking baseline is an internal, same-property diagnostic, not a universal industry CTR benchmark or a promise of future clicks. Search Analytics returns top rows rather than a guaranteed exhaustive query universe; low-volume queries can be anonymized, data is delayed, and capped results are marked as truncated.
 
-## 1. Google Cloud setup
+## 1. Google Cloud setup (mobile-friendly)
 
-1. Create or select a Google Cloud project.
-2. Enable **Google Search Console API**.
-3. Configure the OAuth consent screen. Add the Google account that owns/has access to the properties as a test user while setting up.
-4. Create an OAuth client with application type **Desktop app** and download its JSON file. Keep that file private and outside the repository.
-5. For long-lived automation, move an External consent screen from Testing to In production and complete any verification Google requires. External apps in Testing can receive refresh tokens that expire after seven days for non-basic scopes such as Search Console.
-6. Confirm the Google account has at least read access to each Search Console property you want collected.
+You can complete this from a phone browser; no terminal, Python or Git app is required.
 
-The only requested OAuth scope is:
+1. Open [Google Cloud Console](https://console.cloud.google.com/), select your project, and enable **Google Search Console API**.
+2. Open **Google Auth Platform → Audience**. Configure the consent screen as External if prompted, and add your Google account as a test user while testing.
+3. Open **Google Auth Platform → Clients** (or APIs & Services → Credentials) and create an OAuth client of type **Web application**. The OAuth Playground requires a Web client, not the Desktop client used by the optional local script.
+4. Under **Authorized redirect URIs**, add this exact URI: `https://developers.google.com/oauthplayground`
+5. Create the client and securely copy its **Client ID** and **Client secret**. Do not post either value in chat or commit them to the repository.
 
-`https://www.googleapis.com/auth/webmasters.readonly`
+The only requested scope is `https://www.googleapis.com/auth/webmasters.readonly`.
 
-## 2. Connect Google OAuth to GitHub Secrets
+## 2. Generate and save the refresh token from your phone
 
-Requirements on your computer: Python 3.10+, Git, and the GitHub CLI (`gh`).
+1. Open [Google OAuth 2.0 Playground](https://developers.google.com/oauthplayground/) in your mobile browser.
+2. Open the gear/settings icon. Set **OAuth flow** to **Server-side**, **Access type** to **Offline**, and **Force prompt** to **Consent Screen**.
+3. Enable **Use your own OAuth credentials** and enter the Web application's Client ID and Client secret created above. Google notes that the Playground proxies the OAuth exchange, so use only Google's official Playground URL and do not share its session or links containing credentials.
+4. In Step 1, enter this exact scope in the custom scope field: `https://www.googleapis.com/auth/webmasters.readonly`
+5. Tap **Authorize APIs** and sign in with the Google account that has access to all the Search Console properties you want MAXIMO to analyse. Approve the read-only access.
+6. In Step 2, tap **Exchange authorization code for tokens**. Copy the **Refresh token** (not the access token).
+7. Open [MAXIMO GitHub Actions Secrets](https://github.com/DKTJONATHAN/Maximo/settings/secrets/actions/new) in your browser. Add three repository secrets, one at a time:
+   - Name: `GSC_CLIENT_ID` · Secret: your Web OAuth Client ID
+   - Name: `GSC_CLIENT_SECRET` · Secret: your Web OAuth Client secret
+   - Name: `GSC_REFRESH_TOKEN` · Secret: the refresh token from Step 2
+8. Save each secret. GitHub will show the secret names, but will not reveal their values afterward.
 
-```bash
-gh auth login
-git clone https://github.com/DKTJONATHAN/Maximo.git
-cd Maximo
-git checkout feat/direct-google-search-console
-python -m pip install -r requirements.txt
-python scripts/authorize_gsc.py --client-secrets /path/to/downloaded-oauth-client.json --repo DKTJONATHAN/Maximo
-```
+Do not paste any of these values into ChatGPT, GitHub issues, pull requests, workflow inputs or source files. If the Playground does not return a refresh token, check that Access type is Offline, Force prompt is Consent Screen, and that the app is authorized with your own OAuth client.
 
-The script opens Google's consent screen in your browser, receives the OAuth callback on localhost, and writes these three values directly to GitHub Actions Secrets using `gh` (they are not printed or committed):
+For a long-lived connection, configure the External consent screen as **In production** and complete any Google verification requirements. An External app left in Testing may issue refresh tokens that expire after seven days for non-basic scopes. If you keep it in Testing, expect to repeat authorization.
 
-- `GSC_CLIENT_ID`
-- `GSC_CLIENT_SECRET`
-- `GSC_REFRESH_TOKEN`
-
-If Google does not issue a refresh token, revoke the app's previous grant from your Google Account security settings and run the script again. Never paste OAuth credentials into chat or source control.
+The optional computer-based alternative is `scripts/authorize_gsc.py`; it is not required for the mobile procedure above.
 
 ## 3. Run the collector
 
