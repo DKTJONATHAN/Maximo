@@ -1,4 +1,6 @@
 import unittest
+from unittest.mock import patch
+import gsc.collector as collector
 from gsc.collector import build_opportunities, bucket, settled_window
 
 
@@ -26,6 +28,30 @@ class ScoringTests(unittest.TestCase):
         result = build_opportunities("sc-domain:example.com", rows, minimum=1)
         self.assertEqual(len(result), 1)
         self.assertGreater(result[0].estimated_click_gap, 0)
+
+    def test_query_pagination_stops_when_page_is_short(self):
+        api = collector.SearchConsole.__new__(collector.SearchConsole)
+        calls = []
+        def fake_request(url, method="GET", payload=None):
+            calls.append(payload["startRow"])
+            return {"rows": [{"keys": ["q", "p"]}] if payload["startRow"] == 0 else []}
+        with patch.object(collector, "PAGE_SIZE", 2), patch.object(api, "_request", side_effect=fake_request):
+            rows, truncated = api.query_all("sc-domain:example.com", "2026-01-01", "2026-01-28")
+        self.assertEqual(calls, [0])
+        self.assertEqual(len(rows), 1)
+        self.assertFalse(truncated)
+
+    def test_query_pagination_marks_cap_as_truncated(self):
+        api = collector.SearchConsole.__new__(collector.SearchConsole)
+        calls = []
+        def fake_request(url, method="GET", payload=None):
+            calls.append(payload["startRow"])
+            return {"rows": [{"keys": ["q", "p"]}, {"keys": ["q2", "p2"]}]}
+        with patch.object(collector, "PAGE_SIZE", 2), patch.object(collector, "MAX_ROWS_PER_PROPERTY", 4), patch.object(api, "_request", side_effect=fake_request):
+            rows, truncated = api.query_all("sc-domain:example.com", "2026-01-01", "2026-01-28")
+        self.assertEqual(calls, [0, 2])
+        self.assertEqual(len(rows), 4)
+        self.assertTrue(truncated)
 
     def test_date_range_limit(self):
         with self.assertRaises(ValueError):
