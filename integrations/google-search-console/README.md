@@ -17,7 +17,7 @@ A shared, read-only Google Search Console integration hosted on Cloudflare Worke
 - Cloudflare Worker: OAuth callback, API routes and scheduled collection.
 - Cloudflare D1: OAuth state, encrypted refresh token, property registry, query snapshots and analysis runs.
 - Cloudflare Worker secrets: Google OAuth client secret, token-encryption key and API admin token.
-- Cron Trigger: daily collection. Search Console data is delayed; use a settled end date rather than assuming yesterday is complete.
+- Scheduled collection: planned follow-up. The current Worker supports on-demand read-only analysis; a Cron Trigger will be enabled after OAuth and manual queries are verified. Search Console data is delayed; use a settled end date rather than assuming yesterday is complete.
 
 No credentials belong in source control, browser JavaScript, Worker responses or logs.
 
@@ -34,27 +34,27 @@ The account must already have at least read permission for every property to be 
 ## Setup checklist
 
 1. Create a Google Cloud project and enable **Google Search Console API**.
-2. Configure the OAuth consent screen and add the account as a test user if the app is still in testing.
+2. Configure the OAuth consent screen. If the app is External and remains in Testing, add your Google account as a test user. Important: Google issues 7-day refresh tokens to External/Testing apps for non-basic scopes such as Search Console. For durable automation, move the consent screen to In production and complete any verification Google requires before relying on scheduled sync.
 3. Create a **Web application** OAuth client.
-4. Deploy the Worker once to obtain its stable HTTPS URL.
-5. Set the exact callback URI to `https://<worker-host>/oauth/google/callback` in the Google OAuth client.
-6. Create a D1 database and apply `schema.sql`.
-7. Add Worker secrets:
+4. From this directory, run `npm install`, then `npx wrangler d1 create maximo-gsc`. Copy the returned database ID into `wrangler.jsonc`. Deploy the Worker once with `npx wrangler deploy` to obtain its stable HTTPS URL.
+5. Set `GOOGLE_REDIRECT_URI` to `https://<worker-host>/oauth/google/callback` in the Worker environment and add that exact URI to the Google OAuth client's authorized redirect URIs.
+6. Apply `schema.sql` to the remote D1 database with `npx wrangler d1 execute maximo-gsc --remote --file=./schema.sql`.
+7. Add Worker secrets with `npx wrangler secret put NAME` (run once for each secret):
    - `GOOGLE_CLIENT_ID`
    - `GOOGLE_CLIENT_SECRET`
    - `TOKEN_ENCRYPTION_KEY` (32 random bytes, base64 encoded)
    - `ADMIN_API_TOKEN` (high-entropy random token)
-8. Set non-secret Worker variables:
+8. Set non-secret Worker variables in `wrangler.jsonc` or the Cloudflare dashboard:
    - `GOOGLE_REDIRECT_URI`
    - `APP_ORIGIN` (the approved MAXIMO dashboard origin, when a UI is added)
-9. Run the OAuth connection flow and verify that property discovery returns the expected sites.
+9. Run `npx wrangler deploy` again after configuring the environment, call `POST /oauth/google/start` with the admin bearer token, open the returned authorization URL, and verify that property discovery returns the expected sites.
 10. Run a read-only query against one property, then enable the daily Cron Trigger.
 
 Do not paste OAuth client secrets, refresh tokens or encryption keys into chat or commit them to Git.
 
 ## API contract (initial)
 
-All `/api/*` endpoints require `Authorization: Bearer <ADMIN_API_TOKEN>`.
+All `/api/*` endpoints require `Authorization: Bearer <ADMIN_API_TOKEN>`. Never put this admin token in browser code; call the Worker from a trusted MAXIMO backend or a secure operator terminal.
 
 - `GET /health` — health check; no secrets or token state returned.
 - `POST /oauth/google/start` — returns a Google authorization URL; requires admin authorization.
@@ -74,7 +74,7 @@ Default pattern:
 ^(who|what|when|where|why|how|which|can|could|should|would|will|do|does|did|is|are|was|were|has|have)\\b
 ```
 
-Google's Search Analytics API uses RE2-compatible regular expressions. Keep patterns configurable per analysis and validate them before sending the request.
+Google's Search Analytics API uses RE2-compatible regular expressions. Keep patterns configurable per analysis and validate them before sending the request. Search Analytics dates are interpreted in Pacific Time by Google, so keep the report date convention explicit when presenting windows.
 
 ## Opportunity ranking
 
