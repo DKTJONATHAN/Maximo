@@ -55,6 +55,9 @@ CREATE TABLE IF NOT EXISTS gsc_question_rows (
   ctr REAL NOT NULL,
   average_position REAL NOT NULL,
   position_bucket INTEGER NOT NULL,
+  baseline_ctr REAL,
+  ctr_gap_pp REAL,
+  estimated_click_gap REAL NOT NULL DEFAULT 0,
   priority_score REAL NOT NULL,
   created_at TEXT NOT NULL,
   UNIQUE (run_id, query, page_url)
