@@ -16,12 +16,12 @@ API_ROOT = "https://www.googleapis.com/webmasters/v3"
 SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 DEFAULT_QUESTION_REGEX = (
     r"^(who|what|when|where|why|how|which|can|could|should|would|will|"
-    r"do|does|did|is|are|was|were|has|have)\\b"
+    r"do|does|did|is|are|was|were|has|have)\b"
 )
 PAGE_SIZE = 25_000
 MAX_ROWS_PER_PROPERTY = 100_000
-MIN_IMPRESSIONS = int(os.getenv("GSC_MIN_IMPRESSIONS", "20"))
-QUESTION_RE = re.compile(os.getenv("GSC_QUESTION_REGEX", DEFAULT_QUESTION_REGEX), re.I)
+MIN_IMPRESSIONS = int(os.getenv("GSC_MIN_IMPRESSIONS") or "20")
+QUESTION_RE = re.compile(os.getenv("GSC_QUESTION_REGEX") or DEFAULT_QUESTION_REGEX, re.I)
 
 
 @dataclass
