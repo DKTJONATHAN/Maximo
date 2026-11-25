@@ -36,9 +36,9 @@ The account must already have at least read permission for every property to be 
 1. Create a Google Cloud project and enable **Google Search Console API**.
 2. Configure the OAuth consent screen. If the app is External and remains in Testing, add your Google account as a test user. Important: Google issues 7-day refresh tokens to External/Testing apps for non-basic scopes such as Search Console. For durable automation, move the consent screen to In production and complete any verification Google requires before relying on scheduled sync.
 3. Create a **Web application** OAuth client.
-4. From this directory, run `npm install`, then `npx wrangler d1 create maximo-gsc`. Copy the returned database ID into `wrangler.jsonc`. Deploy the Worker once with `npx wrangler deploy` to obtain its stable HTTPS URL.
+4. Clone the MAXIMO repository, check out `feat/direct-google-search-console`, enter this directory and run `npm install` and `npx wrangler login`. Create D1 with `npx wrangler d1 create maximo-gsc`, then add the returned ID to `wrangler.jsonc` under `d1_databases` as binding `DB` and database name `maximo-gsc`.
 5. Set `GOOGLE_REDIRECT_URI` to `https://<worker-host>/oauth/google/callback` in the Worker environment and add that exact URI to the Google OAuth client's authorized redirect URIs.
-6. Apply `schema.sql` to the remote D1 database with `npx wrangler d1 execute maximo-gsc --remote --file=./schema.sql`.
+6. Apply `schema.sql` to the remote D1 database with `npx wrangler d1 execute maximo-gsc --remote --file=./schema.sql`, then deploy with `npx wrangler deploy`.
 7. Add Worker secrets with `npx wrangler secret put NAME` (run once for each secret):
    - `GOOGLE_CLIENT_ID`
    - `GOOGLE_CLIENT_SECRET`
