@@ -5,11 +5,4 @@
   "compatibility_date": "2026-11-25",
   "workers_dev": true,
   "observability": { "enabled": true },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "maximo-gsc",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
-    }
-  ]
 }
