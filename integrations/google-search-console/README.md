@@ -65,7 +65,7 @@ Open **GitHub → Maximo → Actions → Google Search Console sync → Run work
 
 The workflow runs tests, discovers properties and uploads CSV/JSON reports as a downloadable artifact retained for 30 days. It runs automatically each day after the workflow is merged into the repository's default branch. GitHub scheduled workflows run from the default branch, not an unmerged feature branch.
 
-The default question regex and minimum-impression threshold (20) are defined in `gsc/collector.py`. The regex and threshold can be overridden with `GSC_QUESTION_REGEX` and `GSC_MIN_IMPRESSIONS` environment variables in the workflow.
+The default question regex and minimum-impression threshold (20) are defined in `gsc/collector.py`. To override them, add repository Variables named `GSC_QUESTION_REGEX` and `GSC_MIN_IMPRESSIONS` under Settings → Secrets and variables → Actions → Variables.
 
 ## 4. Optional durable Google Cloud Storage archive
 
