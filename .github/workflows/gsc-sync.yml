@@ -1,6 +1,13 @@
 name: Google Search Console sync
 
 on:
+  pull_request:
+    paths:
+      - "gsc/**"
+      - "scripts/authorize_gsc.py"
+      - "tests/**"
+      - "requirements.txt"
+      - ".github/workflows/gsc-sync.yml"
   workflow_dispatch:
     inputs:
       start_date:
@@ -39,12 +46,13 @@ jobs:
       - name: Run tests
         run: python -m unittest discover -s tests -v
       - name: Authenticate to Google Cloud (optional persistent archive)
-        if: ${{ vars.GCP_WIF_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' && vars.GCS_BUCKET != '' }}
+        if: ${{ github.event_name != 'pull_request' && vars.GCP_WIF_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' && vars.GCS_BUCKET != '' }}
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       - name: Collect Search Console data
+        if: ${{ github.event_name != 'pull_request' }}
         env:
           GSC_CLIENT_ID: ${{ secrets.GSC_CLIENT_ID }}
           GSC_CLIENT_SECRET: ${{ secrets.GSC_CLIENT_SECRET }}
@@ -57,7 +65,7 @@ jobs:
           GSC_MIN_IMPRESSIONS: ${{ vars.GSC_MIN_IMPRESSIONS }}
         run: python -m gsc.collector
       - name: Upload reports to GitHub Actions artifact
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: gsc-reports-${{ github.run_id }}
