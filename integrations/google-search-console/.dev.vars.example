@@ -1,6 +1,0 @@
-# Copy to .dev.vars for local development. Never commit real values.
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=http://localhost:8787/oauth/google/callback
-TOKEN_ENCRYPTION_KEY=
-ADMIN_API_TOKEN=
