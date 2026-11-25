@@ -52,9 +52,9 @@ jobs:
           GSC_START_DATE: ${{ inputs.start_date }}
           GSC_END_DATE: ${{ inputs.end_date }}
           GSC_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-          GCS_BUCKET: \${{ vars.GCP_WIF_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' && vars.GCS_BUCKET != '' && vars.GCS_BUCKET || '' }}
-          GSC_QUESTION_REGEX: \${{ vars.GSC_QUESTION_REGEX }}
-          GSC_MIN_IMPRESSIONS: \${{ vars.GSC_MIN_IMPRESSIONS }}
+          GCS_BUCKET: ${{ vars.GCP_WIF_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' && vars.GCS_BUCKET != '' && vars.GCS_BUCKET || '' }}
+          GSC_QUESTION_REGEX: ${{ vars.GSC_QUESTION_REGEX }}
+          GSC_MIN_IMPRESSIONS: ${{ vars.GSC_MIN_IMPRESSIONS }}
         run: python -m gsc.collector
       - name: Upload reports to GitHub Actions artifact
         if: always()
