@@ -1,59 +1,51 @@
-# Implementation plan
+# Implementation plan — GitHub + Google Cloud
 
-## Selected decisions
+## Architecture decisions
 
-- Hosting: Cloudflare Workers.
-- Google identity: one Google account, one OAuth connection.
-- Permission: Search Console read-only scope only.
-- Storage: dedicated D1 database; refresh token encrypted at application layer.
-- First consumer: MAXIMO admin workflow; site-specific dashboards can be added later.
-- Initial behavior: read, analyze and recommend only. No automatic content edits or publishing.
+- Execution: GitHub Actions (daily schedule + manual dispatch).
+- Google identity: one Google OAuth Desktop client and one Google account.
+- Permission: `webmasters.readonly` only.
+- Runtime: Python 3.12 in GitHub-hosted runners; no always-on server.
+- Secrets: refresh token, OAuth client ID and client secret in GitHub Actions Secrets.
+- Default persistence: downloadable GitHub Actions artifacts (30-day retention).
+- Optional durable archive: Google Cloud Storage via GitHub OIDC Workload Identity Federation; no static service-account key.
+- Initial behavior: read, analyse and recommend only; no website changes or publishing.
 
-## Current implementation status\n\n- [x] Dedicated Cloudflare Worker project scaffold and D1 schema.\n- [x] Read-only OAuth authorization-code flow with one-time state, offline access and AES-GCM refresh-token storage.\n- [x] Search Console property discovery and allowlisted property registry.\n- [x] Query + page analysis with configurable RE2 filter, bounded pagination and position-bucket CTR baseline.\n- [ ] Typecheck and automated tests (not run in this environment).\n- [ ] Cloudflare D1 creation, secrets, deployment and live OAuth verification (requires account-side setup).\n- [ ] Scheduled collection, dashboard and four-week measurement workflow.\n\n## Milestones
+## Status
 
-### A. Cloud and Google prerequisites
-- [ ] Create Google Cloud project and enable Search Console API.
-- [ ] Configure OAuth consent screen and OAuth Web client.
-- [ ] Deploy Worker and set exact redirect URI.
-- [ ] Create D1 database and apply schema.
-- [ ] Set secrets and non-secret variables.
-- [ ] Complete OAuth consent and store encrypted refresh token.
-
-### B. Read-only API
-- [x] Implement OAuth state validation, token exchange and refresh.
-- [x] Implement property discovery and local property registry.
-- [x] Implement query + page Search Analytics request and bounded pagination.
-- [x] Enforce property allowlist, date validation and RE2 regex length limits.
-- [ ] Add structured, redacted error handling and audit events.
-
-### C. Question mining
-- [ ] Implement configurable question regex patterns.
-- [x] Persist query/page pairs without losing page attribution.
-- [x] Calculate CTR and position buckets.
-- [x] Build position-aware CTR baselines from the same property/date window.
-- [x] Rank by impression-weighted CTR gap and practical opportunity size.
-- [ ] Flag low sample sizes, truncated datasets and missing baseline data.
-
-### D. Operations and reporting
-- [ ] Add daily Cron Trigger using a settled date window.
-- [ ] Add retry/backoff for transient Google API errors and quota responses.
-- [ ] Add monitoring for expired/revoked authorization and failed syncs.
-- [ ] Expose CSV/JSON export and a MAXIMO dashboard view.
-- [ ] Add a four-week before/after comparison for changed pages.
+- [x] Remove Cloudflare Worker/D1 runtime from the integration.
+- [x] Implement local OAuth bootstrap that stores credentials directly in GitHub Actions Secrets.
+- [x] Implement Search Console property discovery for the authorized Google account.
+- [x] Implement query + page collection with bounded pagination (100,000 rows/property).
+- [x] Implement question-query filtering, minimum-impression threshold and position-bucket CTR baseline.
+- [x] Export per-property CSV/JSON and run summaries.
+- [x] Add transient API retry/backoff.
+- [x] Add daily scheduled and manual GitHub Actions workflow.
+- [x] Add optional GCS archive using OIDC/WIF.
+- [x] Add unit tests for date bounds, position buckets and opportunity scoring.
+- [ ] Configure Google Cloud OAuth consent/client and add GitHub Secrets (account-side action required).
+- [ ] Run a live Search Console sync and inspect real property/report results.
+- [ ] Configure optional GCS bucket/WIF variables if durable archive is wanted.
+- [ ] Merge to the default branch to activate scheduled runs.
+- [ ] Build a dashboard and longer-term change measurement workflow.
 
 ## Acceptance criteria
 
-1. OAuth refresh token never appears in source code, browser output or logs.
-2. Only the read-only Search Console scope is requested.
-3. Property discovery returns only sites visible to the authorized Google account.
-4. A query is rejected if its siteUrl is not in the discovered property registry.
-5. Regex analysis returns query/page pairs and preserves the page attribution.
-6. Pagination is bounded and the report explicitly marks truncated results.
-7. CTR is compared within position buckets; low-impression rows are not promoted as strong opportunities.
-8. Scheduled collection uses settled dates and is idempotent for a property/date/run.
-9. No page content is changed or published by this integration.
-10. Unit tests cover regex validation, date validation, scoring, encryption/decryption and pagination boundaries.
+1. Only `webmasters.readonly` is requested.
+2. Refresh token and OAuth client secret are never logged or committed.
+3. All properties returned by the authorized account are discovered automatically.
+4. Data is queried only for properties returned by the Search Console Sites API.
+5. Query/page attribution is preserved.
+6. Pagination is bounded and truncation is disclosed.
+7. CTR comparison is position-bucketed and clearly labelled as an internal observed baseline.
+8. Daily collection uses a settled date window and manual runs accept explicit dates.
+9. Reports are available as GitHub artifacts; optional GCS uses short-lived WIF credentials.
+10. No site content is modified or published.
 
-## Dependencies and deployment blocker
+## Known limitations
 
-The code can be completed in the MAXIMO repository, but live authorization and deployment require the user's Google Cloud OAuth client credentials and access to the target Cloudflare account. These must be entered directly into Google Cloud and Cloudflare; they should never be sent in chat or committed to Git.
+- Search Analytics API data is delayed, top-row based and may omit anonymized low-volume queries.
+- The 100k-row cap may truncate large properties.
+- GitHub artifacts expire after 30 days; configure GCS for durable history.
+- No dashboard, scheduled historical backfill, automatic publishing or site-side integration is included in this first release.
+- Google OAuth External apps left in Testing may receive refresh tokens that expire after seven days for sensitive scopes; configure consent-screen production status as required.
