@@ -13,3 +13,11 @@ coverage/
 .cache/
 playwright-report/
 test-results/
+.dev.vars
+.wrangler/
+__pycache__/
+*.py[cod]
+.venv/
+reports/
+client_secret*.json
+credentials*.json
