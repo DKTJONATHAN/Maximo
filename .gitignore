@@ -13,3 +13,4 @@ coverage/
 .cache/
 playwright-report/
 test-results/
+\n# Cloudflare local secrets and state\n.dev.vars\n.wrangler/\n
