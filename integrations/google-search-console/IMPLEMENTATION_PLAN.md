@@ -9,7 +9,7 @@
 - First consumer: MAXIMO admin workflow; site-specific dashboards can be added later.
 - Initial behavior: read, analyze and recommend only. No automatic content edits or publishing.
 
-## Milestones
+## Current implementation status\n\n- [x] Dedicated Cloudflare Worker project scaffold and D1 schema.\n- [x] Read-only OAuth authorization-code flow with one-time state, offline access and AES-GCM refresh-token storage.\n- [x] Search Console property discovery and allowlisted property registry.\n- [x] Query + page analysis with configurable RE2 filter, bounded pagination and position-bucket CTR baseline.\n- [ ] Typecheck and automated tests (not run in this environment).\n- [ ] Cloudflare D1 creation, secrets, deployment and live OAuth verification (requires account-side setup).\n- [ ] Scheduled collection, dashboard and four-week measurement workflow.\n\n## Milestones
 
 ### A. Cloud and Google prerequisites
 - [ ] Create Google Cloud project and enable Search Console API.
@@ -20,18 +20,18 @@
 - [ ] Complete OAuth consent and store encrypted refresh token.
 
 ### B. Read-only API
-- [ ] Implement OAuth state validation, token exchange and refresh.
-- [ ] Implement property discovery and local property registry.
-- [ ] Implement query + page Search Analytics request and bounded pagination.
-- [ ] Enforce property allowlist, date validation and RE2 regex length limits.
+- [x] Implement OAuth state validation, token exchange and refresh.
+- [x] Implement property discovery and local property registry.
+- [x] Implement query + page Search Analytics request and bounded pagination.
+- [x] Enforce property allowlist, date validation and RE2 regex length limits.
 - [ ] Add structured, redacted error handling and audit events.
 
 ### C. Question mining
 - [ ] Implement configurable question regex patterns.
-- [ ] Persist query/page pairs without losing page attribution.
-- [ ] Calculate CTR and position buckets.
-- [ ] Build position-aware CTR baselines from the same property/date window.
-- [ ] Rank by impression-weighted CTR gap and practical opportunity size.
+- [x] Persist query/page pairs without losing page attribution.
+- [x] Calculate CTR and position buckets.
+- [x] Build position-aware CTR baselines from the same property/date window.
+- [x] Rank by impression-weighted CTR gap and practical opportunity size.
 - [ ] Flag low sample sizes, truncated datasets and missing baseline data.
 
 ### D. Operations and reporting
