@@ -1,0 +1,36 @@
+import unittest
+from gsc.collector import build_opportunities, bucket, settled_window
+
+
+class ScoringTests(unittest.TestCase):
+    def test_position_bucket(self):
+        self.assertEqual(bucket(1.9), 1)
+        self.assertEqual(bucket(101), 100)
+
+    def test_only_question_queries_and_minimum_impressions(self):
+        rows = [
+            {"keys": ["how to fix indexing", "https://example.com/a"], "clicks": 2, "impressions": 100, "ctr": .02, "position": 5},
+            {"keys": ["blue shoes", "https://example.com/b"], "clicks": 8, "impressions": 100, "ctr": .08, "position": 5},
+            {"keys": ["why low volume", "https://example.com/c"], "clicks": 0, "impressions": 5, "ctr": 0, "position": 5},
+        ]
+        result = build_opportunities("sc-domain:example.com", rows, minimum=20)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].query, "how to fix indexing")
+        self.assertGreater(result[0].estimated_click_gap, 0)
+
+    def test_gap_uses_position_baseline(self):
+        rows = [
+            {"keys": ["what is x", "https://example.com/a"], "clicks": 1, "impressions": 100, "ctr": .01, "position": 4},
+            {"keys": ["other query", "https://example.com/b"], "clicks": 20, "impressions": 100, "ctr": .20, "position": 4},
+        ]
+        result = build_opportunities("sc-domain:example.com", rows, minimum=1)
+        self.assertEqual(len(result), 1)
+        self.assertGreater(result[0].estimated_click_gap, 0)
+
+    def test_date_range_limit(self):
+        with self.assertRaises(ValueError):
+            settled_window("2026-01-01", "2026-05-01")
+
+
+if __name__ == "__main__":
+    unittest.main()
