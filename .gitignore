@@ -13,4 +13,11 @@ coverage/
 .cache/
 playwright-report/
 test-results/
-\n# Cloudflare local secrets and state\n.dev.vars\n.wrangler/\n
+.dev.vars
+.wrangler/
+__pycache__/
+*.py[cod]
+.venv/
+reports/
+client_secret*.json
+credentials*.json
