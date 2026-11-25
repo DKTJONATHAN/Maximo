@@ -1,110 +1,133 @@
-# Direct Google Search Console integration
+# MAXIMO — direct Google Search Console integration
 
-A shared, read-only Google Search Console integration hosted on Cloudflare Workers for MAXIMO-managed websites.
+A GitHub Actions-based, read-only Search Console collector for every property accessible to one Google account. Google Cloud supplies OAuth and (optionally) durable object storage; GitHub Actions runs the collector and stores downloadable reports.
 
-## Scope
+## Architecture
 
-- One Google OAuth connection for the Google account that already has access to the user's Search Console properties.
-- Discover all properties visible to that account through the Search Console Sites API.
-- Pull query + page performance rows directly from the Search Analytics API.
-- Detect question queries using configurable RE2-compatible regular expressions.
-- Rank opportunities using impressions, CTR, average position and position-aware CTR comparisons.
-- Persist snapshots for trend comparison and export.
-- Never edit site content or submit sitemaps in the initial release.
+- **GitHub Actions:** daily scheduled collection, manual runs, tests and report artifacts.
+- **Google Cloud OAuth:** one Desktop OAuth client authorizes the Google account that already has access to the Search Console properties.
+- **Search Console API:** read-only property discovery and query/page performance data.
+- **GitHub Actions artifacts:** default report delivery (30-day retention).
+- **Google Cloud Storage (optional):** durable report archive, authenticated with GitHub OIDC Workload Identity Federation (no service-account JSON key).
 
-## Hosting and storage
+There is no Cloudflare Worker, D1 database, always-on server or Cloudflare secret configuration.
 
-- Cloudflare Worker: OAuth callback, API routes and scheduled collection.
-- Cloudflare D1: OAuth state, encrypted refresh token, property registry, query snapshots and analysis runs.
-- Cloudflare Worker secrets: Google OAuth client secret, token-encryption key and API admin token.
-- Scheduled collection: planned follow-up. The current Worker supports on-demand read-only analysis; a Cron Trigger will be enabled after OAuth and manual queries are verified. Search Console data is delayed; use a settled end date rather than assuming yesterday is complete.
+## What it does
 
-No credentials belong in source control, browser JavaScript, Worker responses or logs.
+- Discovers all Search Console properties visible to the connected Google account.
+- Collects Web search query + page rows for the latest settled 28-day period (default end date: three days ago).
+- Mines question queries using a configurable regex.
+- Preserves query-to-page attribution.
+- Compares CTR against the same property's observed CTR baseline within integer average-position buckets.
+- Calculates an estimated CTR-gap opportunity score and exports CSV + JSON per property.
+- Retries transient Google API errors and caps collection at 100,000 rows per property.
+- Runs daily at 06:17 UTC and can also be started manually with custom dates.
 
-## OAuth
+The ranking baseline is an internal, same-property diagnostic, not a universal industry CTR benchmark or a promise of future clicks. Search Analytics returns top rows rather than a guaranteed exhaustive query universe; low-volume queries can be anonymized, data is delayed, and capped results are marked as truncated.
 
-Request only:
+## 1. Google Cloud setup
+
+1. Create or select a Google Cloud project.
+2. Enable **Google Search Console API**.
+3. Configure the OAuth consent screen. Add the Google account that owns/has access to the properties as a test user while setting up.
+4. Create an OAuth client with application type **Desktop app** and download its JSON file. Keep that file private and outside the repository.
+5. For long-lived automation, move an External consent screen from Testing to In production and complete any verification Google requires. External apps in Testing can receive refresh tokens that expire after seven days for non-basic scopes such as Search Console.
+6. Confirm the Google account has at least read access to each Search Console property you want collected.
+
+The only requested OAuth scope is:
 
 `https://www.googleapis.com/auth/webmasters.readonly`
 
-Use Google's OAuth 2.0 authorization-code flow with offline access. The refresh token is encrypted with AES-GCM before it is stored in D1. Access tokens are short-lived and held only in Worker memory for the request.
+## 2. Connect Google OAuth to GitHub Secrets
 
-The account must already have at least read permission for every property to be analyzed. The API cannot grant Search Console property access.
+Requirements on your computer: Python 3.10+, Git, and the GitHub CLI (`gh`).
 
-## Setup checklist
-
-1. Create a Google Cloud project and enable **Google Search Console API**.
-2. Configure the OAuth consent screen. If the app is External and remains in Testing, add your Google account as a test user. Important: Google issues 7-day refresh tokens to External/Testing apps for non-basic scopes such as Search Console. For durable automation, move the consent screen to In production and complete any verification Google requires before relying on scheduled sync.
-3. Create a **Web application** OAuth client.
-4. Clone the MAXIMO repository, check out `feat/direct-google-search-console`, enter this directory and run `npm install` and `npx wrangler login`. Create D1 with `npx wrangler d1 create maximo-gsc`, then add the returned ID to `wrangler.jsonc` under `d1_databases` as binding `DB` and database name `maximo-gsc`.
-5. Set `GOOGLE_REDIRECT_URI` to `https://<worker-host>/oauth/google/callback` in the Worker environment and add that exact URI to the Google OAuth client's authorized redirect URIs.
-6. Apply `schema.sql` to the remote D1 database with `npx wrangler d1 execute maximo-gsc --remote --file=./schema.sql`, then deploy with `npx wrangler deploy`.
-7. Add Worker secrets with `npx wrangler secret put NAME` (run once for each secret):
-   - `GOOGLE_CLIENT_ID`
-   - `GOOGLE_CLIENT_SECRET`
-   - `TOKEN_ENCRYPTION_KEY` (32 random bytes, base64 encoded)
-   - `ADMIN_API_TOKEN` (high-entropy random token)
-8. Set non-secret Worker variables in `wrangler.jsonc` or the Cloudflare dashboard:
-   - `GOOGLE_REDIRECT_URI`
-   - `APP_ORIGIN` (the approved MAXIMO dashboard origin, when a UI is added)
-9. Run `npx wrangler deploy` again after configuring the environment, call `POST /oauth/google/start` with the admin bearer token, open the returned authorization URL, and verify that property discovery returns the expected sites.
-10. Run a read-only query against one property, then enable the daily Cron Trigger.
-
-Do not paste OAuth client secrets, refresh tokens or encryption keys into chat or commit them to Git.
-
-## API contract (initial)
-
-All `/api/*` endpoints require `Authorization: Bearer <ADMIN_API_TOKEN>`. Never put this admin token in browser code; call the Worker from a trusted MAXIMO backend or a secure operator terminal.
-
-- `GET /health` — health check; no secrets or token state returned.
-- `POST /oauth/google/start` — returns a Google authorization URL; requires admin authorization.
-- `GET /oauth/google/callback` — validates one-time OAuth state, exchanges the code and encrypts the refresh token.
-- `GET /api/properties` — list accessible Search Console properties.
-- `POST /api/properties/sync` — refresh the property registry.
-- `POST /api/questions/analyze` — request question query/page rows for a property and date range.
-- `GET /api/questions/opportunities?siteUrl=...` — read the most recent stored opportunity snapshot.
-
-The OAuth start endpoint returns a URL rather than redirecting directly so an authorized admin client can initiate the flow without putting an admin token in a URL.
-
-## Question regex
-
-Default pattern:
-
-```regex
-^(who|what|when|where|why|how|which|can|could|should|would|will|do|does|did|is|are|was|were|has|have)\\b
+```bash
+gh auth login
+git clone https://github.com/DKTJONATHAN/Maximo.git
+cd Maximo
+git checkout feat/direct-google-search-console
+python -m pip install -r requirements.txt
+python scripts/authorize_gsc.py --client-secrets /path/to/downloaded-oauth-client.json --repo DKTJONATHAN/Maximo
 ```
 
-Google's Search Analytics API uses RE2-compatible regular expressions. Keep patterns configurable per analysis and validate them before sending the request. Search Analytics dates are interpreted in Pacific Time by Google, so keep the report date convention explicit when presenting windows.
+The script opens Google's consent screen in your browser, receives the OAuth callback on localhost, and writes these three values directly to GitHub Actions Secrets using `gh` (they are not printed or committed):
 
-## Opportunity ranking
+- `GSC_CLIENT_ID`
+- `GSC_CLIENT_SECRET`
+- `GSC_REFRESH_TOKEN`
 
-Do not rank by impressions alone. Each opportunity must include:
+If Google does not issue a refresh token, revoke the app's previous grant from your Google Account security settings and run the script again. Never paste OAuth credentials into chat or source control.
 
-- impressions, clicks and CTR from Google;
-- average position from Google;
-- the page URL associated with the query;
-- a position bucket;
-- a position-aware comparison against the property's observed CTR baseline when enough rows exist;
-- a transparent priority score and the exact formula used.
+## 3. Run the collector
 
-Use a minimum-impression threshold to avoid noisy recommendations. Never promise a click increase from a content change. Recommendations are advisory; publishing requires a separate explicit approval workflow.
+Open **GitHub → Maximo → Actions → Google Search Console sync → Run workflow**. Leave dates blank for the default settled 28-day window, or supply `YYYY-MM-DD` start/end dates (maximum 90 days).
 
-## Known Search Console limitations
+The workflow runs tests, discovers properties and uploads CSV/JSON reports as a downloadable artifact retained for 30 days. It runs automatically each day after the workflow is merged into the repository's default branch. GitHub scheduled workflows run from the default branch, not an unmerged feature branch.
 
-- Search Analytics returns top rows, not a guaranteed exhaustive query universe.
-- Some low-volume queries are anonymized or omitted by Google.
-- Data commonly lags by a few days.
-- A query can map to multiple pages; preserve query/page pairs rather than collapsing them prematurely.
-- The API's row limit is 25,000 per request; paginate with `startRow` and disclose truncation.
+The default question regex and minimum-impression threshold (20) are defined in `gsc/collector.py`. The regex and threshold can be overridden with `GSC_QUESTION_REGEX` and `GSC_MIN_IMPRESSIONS` environment variables in the workflow.
 
-## Operational security
+## 4. Optional durable Google Cloud Storage archive
 
-- Use read-only OAuth scope.
-- Encrypt refresh tokens at rest using AES-GCM and a dedicated 256-bit key.
-- Rotate the encryption key with a planned re-encryption procedure; do not simply replace it.
-- Validate siteUrl against the property registry before querying.
-- Validate dates, regex length and allowed dimensions.
-- Apply request throttling and bounded pagination.
-- Redact authorization headers, OAuth codes and token payloads from logs.
-- Add an audit record for OAuth connect/disconnect and each analysis run.
-- Keep content publishing and Search Console write operations out of this service.
+GitHub artifacts are convenient but expire after 30 days. For long-term history, create a bucket and configure Workload Identity Federation (WIF), so GitHub Actions receives short-lived Google credentials without a service-account key.
+
+Set shell variables first:
+
+```bash
+PROJECT_ID="your-google-cloud-project-id"
+PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
+BUCKET="a-globally-unique-maximo-gsc-bucket"
+SA="maximo-gsc-github"
+POOL="github-pool"
+PROVIDER="github-provider"
+REPO="DKTJONATHAN/Maximo"
+```
+
+Create the bucket and service account:
+
+```bash
+gcloud config set project "$PROJECT_ID"
+gcloud services enable iamcredentials.googleapis.com sts.googleapis.com storage.googleapis.com
+gcloud storage buckets create "gs://$BUCKET" --location=US --uniform-bucket-level-access
+gcloud iam service-accounts create "$SA" --display-name="MAXIMO GitHub GSC archive"
+```
+
+Create the GitHub OIDC identity pool/provider restricted to this repository:
+
+```bash
+gcloud iam workload-identity-pools create "$POOL" --location=global --display-name="GitHub Actions"
+gcloud iam workload-identity-pools providers create-oidc "$PROVIDER" \
+  --location=global --workload-identity-pool="$POOL" \
+  --display-name="MAXIMO repository" \
+  --issuer-uri="https://token.actions.githubusercontent.com" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
+  --attribute-condition="assertion.repository == '$REPO'"
+```
+
+Grant the repository permission to impersonate the service account and create archive objects:
+
+```bash
+gcloud iam service-accounts add-iam-policy-binding "$SA@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL/attribute.repository/$REPO"
+gcloud storage buckets add-iam-policy-binding "gs://$BUCKET" \
+  --member="serviceAccount:$SA@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/storage.objectCreator"
+```
+
+Add these **GitHub repository Variables** (Settings → Secrets and variables → Actions → Variables):
+
+- `GCP_WIF_PROVIDER` = `projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider`
+- `GCP_SERVICE_ACCOUNT` = `maximo-gsc-github@PROJECT_ID.iam.gserviceaccount.com`
+- `GCS_BUCKET` = your bucket name (without `gs://`)
+
+The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-account private key is needed. If these three variables are not configured, collection still works and reports are available as GitHub artifacts.
+
+## Output and limitations
+
+- `*-opportunities.csv` — spreadsheet-friendly opportunities.
+- `*-opportunities.json` — complete structured opportunity records.
+- `*-summary.json` — per-property date window, row count and truncation status.
+- `run-summary.json` — overall property success/failure summary.
+
+This first version is an analytics collector, not a web dashboard. It does not edit site content, submit sitemaps, publish pages, or modify Search Console settings. Google Search Console API quotas and data availability apply.
