@@ -27,9 +27,9 @@ def main() -> int:
     args = parser.parse_args()
     client_path = Path(args.client_secrets).expanduser()
     config = json.loads(client_path.read_text(encoding="utf-8"))
-    client = config.get("installed") or config.get("web")
+    client = config.get("installed")
     if not client:
-        raise SystemExit("OAuth JSON must contain an installed or web client")
+        raise SystemExit("OAuth JSON must be a Google Desktop (installed) OAuth client")
     flow = InstalledAppFlow.from_client_secrets_file(str(client_path), scopes=[SCOPE])
     credentials = flow.run_local_server(host="localhost", port=0, access_type="offline", prompt="consent")
     if not credentials.refresh_token:
