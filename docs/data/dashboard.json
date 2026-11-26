@@ -1,28 +1,2036 @@
 {
   "schema_version": 1,
-  "generated_at": null,
-  "period": {"start": null, "end": null},
-  "comparison_period": {"start": null, "end": null},
+  "generated_at": "2026-11-26T07:48:27.706617+00:00",
+  "period": {
+    "start": "2026-10-27",
+    "end": "2026-11-23"
+  },
+  "comparison_period": {
+    "start": "2026-09-29",
+    "end": "2026-10-26"
+  },
   "summary": {
-    "properties_discovered": 0,
-    "properties_collected": 0,
-    "properties_with_errors": 0,
-    "clicks": 0,
-    "previous_clicks": 0,
-    "impressions": 0,
-    "previous_impressions": 0,
-    "sitemap_errors": 0,
-    "sitemap_fetch_errors": 0,
-    "sitemap_warnings": 0,
-    "sitemap_submitted_urls": 0,
+    "properties_discovered": 17,
+    "properties_collected": 12,
+    "properties_with_errors": 5,
+    "clicks": 4.0,
+    "previous_clicks": 9.0,
+    "impressions": 159.0,
+    "previous_impressions": 78.0,
+    "sitemap_errors": 3,
+    "sitemap_warnings": 4,
+    "sitemap_submitted_urls": 3191,
     "sitemap_indexed_urls": 0,
-    "inspected_urls": 0,
+    "inspected_urls": 8,
     "not_indexed_urls": 0
   },
-  "properties": [],
-  "best_performers": [],
-  "biggest_gainers": [],
-  "biggest_decliners": [],
-  "events": [],
+  "properties": [
+    {
+      "property": "https://wirapoint.eu.cc/",
+      "host": "wirapoint.eu.cc",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://wirapoint.eu.cc/",
+          "path": "https://wirapoint.eu.cc/sitemap.xml",
+          "last_submitted": "2026-11-20T08:52:20.582Z",
+          "last_downloaded": null,
+          "is_pending": true,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        },
+        {
+          "property": "https://wirapoint.eu.cc/",
+          "path": "https://wirapoint.eu.cc/sitemap-blog.xml",
+          "last_submitted": "2026-11-19T15:08:58.051Z",
+          "last_downloaded": null,
+          "is_pending": true,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "https://wirapoint.pages.dev/",
+      "host": "wirapoint.pages.dev",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://wirapoint.pages.dev/",
+          "path": "https://wirapoint.pages.dev/sitemap.xml",
+          "last_submitted": "2026-11-19T12:11:40.228Z",
+          "last_downloaded": null,
+          "is_pending": true,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:zandani.co.ke",
+      "host": "zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 0.0,
+      "previous_clicks": 8.0,
+      "clicks_delta": -8.0,
+      "impressions": 26.0,
+      "previous_impressions": 42.0,
+      "impressions_delta": -16.0,
+      "ctr": 0.0,
+      "position": 4.0,
+      "query_page_rows": 2,
+      "sitemaps": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-static.xml",
+          "last_submitted": "2026-11-13T08:36:48.400Z",
+          "last_downloaded": "2026-11-13T08:36:48.978Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-categories.xml",
+          "last_submitted": "2026-11-13T08:36:48.310Z",
+          "last_downloaded": "2026-11-13T08:36:49.162Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "6",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-articles.xml",
+          "last_submitted": "2026-11-13T08:36:48.198Z",
+          "last_downloaded": "2026-11-13T08:36:50.247Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "1416",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/news-sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:48.069Z",
+          "last_downloaded": "2026-11-13T08:36:48.549Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "21",
+              "indexed": "0"
+            },
+            {
+              "type": "news",
+              "submitted": "21",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:47.915Z",
+          "last_downloaded": "2026-11-13T08:36:48.638Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://accaforge.zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-09T10:30:02.910Z",
+          "last_downloaded": "2026-11-09T10:30:04.150Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "55",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "http://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-09-03T09:27:06.674Z",
+          "last_downloaded": "2026-10-26T09:46:29.861Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 2,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 2,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 1555,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 1,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "url": "https://zandani.co.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://zandani.co.ke/",
+          "user_canonical": "https://zandani.co.ke/",
+          "last_crawl_time": "2026-11-25T02:04:43Z",
+          "referring_urls": [
+            "https://zandani.co.ke/article/how-to-use-music-to-reduce-pet-stress-in-2026",
+            "https://zandani.co.ke/article/trisha-khalid-sparks-debate-on-child-support-and-parental-roles",
+            "https://zandani.co.ke/article/radio-africa-group-presenters-swap-stations-following-listener-vote",
+            "https://zandani.co.ke/tag/pritty-vishy-motorbike",
+            "http://zandani.co.ke/"
+          ],
+          "sitemap_urls": []
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "https://mauamarketplace.pages.dev/",
+      "host": "mauamarketplace.pages.dev",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://mauamarketplace.pages.dev/",
+          "path": "https://mauamarketplace.pages.dev/sitemap.xml",
+          "last_submitted": "2026-11-06T21:12:31.333Z",
+          "last_downloaded": null,
+          "is_pending": true,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 1,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "https://mauamarketplace.pages.dev/",
+          "url": "https://mauamarketplace.pages.dev/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://mauamarketplace.pages.dev/",
+          "user_canonical": "https://mauamarketplace.eu.cc/",
+          "last_crawl_time": "2026-11-14T21:02:27Z",
+          "referring_urls": [
+            "https://mauamarketplace.pages.dev/refund-policy",
+            "https://mauamarketplace.pages.dev/saved"
+          ],
+          "sitemap_urls": []
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:jonathanmwaniki.co.ke",
+      "host": "jonathanmwaniki.co.ke",
+      "permission_level": "siteUnverifiedUser",
+      "health": "access_error",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "sc-domain:jonathanmwaniki.co.ke",
+          "errors": 0,
+          "warnings": 0,
+          "error": "RuntimeError: Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site 'sc-domain:jonathanmwaniki.co.ke'. See also: [URL]"
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 1,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site 'sc-domain:jonathanmwaniki.co.ke'. See also: [URL]",
+      "historical_error": null
+    },
+    {
+      "property": "https://www.zandani.co.ke/",
+      "host": "www.zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "http://www.jonathanmwaniki.co.ke/",
+      "host": "www.jonathanmwaniki.co.ke",
+      "permission_level": "siteUnverifiedUser",
+      "health": "access_error",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "http://www.jonathanmwaniki.co.ke/",
+          "errors": 0,
+          "warnings": 0,
+          "error": "RuntimeError: Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]"
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 1,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]",
+      "historical_error": null
+    },
+    {
+      "property": "http://zandani.co.ke/",
+      "host": "zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "http://zandani.co.ke/",
+          "path": "http://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-09-03T09:27:06.674Z",
+          "last_downloaded": "2026-10-26T09:46:29.861Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 2,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 2,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "https://accaforge.zandani.co.ke/",
+      "host": "accaforge.zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://accaforge.zandani.co.ke/",
+          "path": "https://accaforge.zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-09T10:30:02.910Z",
+          "last_downloaded": "2026-11-09T10:30:04.150Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "55",
+              "indexed": "0"
+            }
+          ]
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 55,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "https://www.jonathanmwaniki.co.ke/",
+      "host": "www.jonathanmwaniki.co.ke",
+      "permission_level": "siteUnverifiedUser",
+      "health": "access_error",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://www.jonathanmwaniki.co.ke/",
+          "errors": 0,
+          "warnings": 0,
+          "error": "RuntimeError: Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]"
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 1,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]",
+      "historical_error": null
+    },
+    {
+      "property": "https://mauamarketplace.eu.cc/",
+      "host": "mauamarketplace.eu.cc",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://mauamarketplace.eu.cc/",
+          "path": "https://mauamarketplace.eu.cc/sitemap.xml",
+          "last_submitted": "2026-11-18T19:12:38.302Z",
+          "last_downloaded": null,
+          "is_pending": true,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:mauamarketplace.pages.dev",
+      "host": "mauamarketplace.pages.dev",
+      "permission_level": "siteUnverifiedUser",
+      "health": "access_error",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "sc-domain:mauamarketplace.pages.dev",
+          "errors": 0,
+          "warnings": 0,
+          "error": "RuntimeError: Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site 'sc-domain:mauamarketplace.pages.dev'. See also: [URL]"
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 1,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site 'sc-domain:mauamarketplace.pages.dev'. See also: [URL]",
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:accaforge.eu.cc",
+      "host": "accaforge.eu.cc",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "sc-domain:accaforge.eu.cc",
+          "path": "https://accaforge.eu.cc/sitemap.xml",
+          "last_submitted": "2026-11-16T11:53:38.854Z",
+          "last_downloaded": null,
+          "is_pending": true,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:accaforge.co.ke",
+      "host": "accaforge.co.ke",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "sc-domain:accaforge.co.ke",
+          "path": "https://accaforge.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-25T17:58:47.439Z",
+          "last_downloaded": "2026-11-25T17:58:48.676Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "59",
+              "indexed": "0"
+            }
+          ]
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 59,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "https://zandani.co.ke/",
+      "host": "zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "no_search_data",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "https://zandani.co.ke/",
+          "path": "https://zandani.co.ke/sitemap-static.xml",
+          "last_submitted": "2026-11-13T08:36:48.400Z",
+          "last_downloaded": "2026-11-13T08:36:48.978Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "https://zandani.co.ke/",
+          "path": "https://zandani.co.ke/sitemap-categories.xml",
+          "last_submitted": "2026-11-13T08:36:48.310Z",
+          "last_downloaded": "2026-11-13T08:36:49.162Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "6",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "https://zandani.co.ke/",
+          "path": "https://zandani.co.ke/sitemap-articles.xml",
+          "last_submitted": "2026-11-13T08:36:48.198Z",
+          "last_downloaded": "2026-11-13T08:36:50.247Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "1416",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "https://zandani.co.ke/",
+          "path": "https://zandani.co.ke/news-sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:48.069Z",
+          "last_downloaded": "2026-11-13T08:36:48.549Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "21",
+              "indexed": "0"
+            },
+            {
+              "type": "news",
+              "submitted": "21",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "https://zandani.co.ke/",
+          "path": "https://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:47.915Z",
+          "last_downloaded": "2026-11-13T08:36:48.638Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 1500,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 1,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "https://zandani.co.ke/",
+          "url": "https://zandani.co.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://zandani.co.ke/",
+          "user_canonical": "https://zandani.co.ke/",
+          "last_crawl_time": "2026-11-25T02:04:43Z",
+          "referring_urls": [
+            "https://zandani.co.ke/article/how-to-use-music-to-reduce-pet-stress-in-2026",
+            "https://zandani.co.ke/article/trisha-khalid-sparks-debate-on-child-support-and-parental-roles",
+            "https://zandani.co.ke/article/radio-africa-group-presenters-swap-stations-following-listener-vote",
+            "https://zandani.co.ke/tag/pritty-vishy-motorbike",
+            "http://zandani.co.ke/"
+          ],
+          "sitemap_urls": []
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "http://jonathanmwaniki.co.ke/",
+      "host": "jonathanmwaniki.co.ke",
+      "permission_level": "siteUnverifiedUser",
+      "health": "access_error",
+      "clicks": 0,
+      "previous_clicks": 0,
+      "clicks_delta": 0,
+      "impressions": 0,
+      "previous_impressions": 0,
+      "impressions_delta": 0,
+      "ctr": 0.0,
+      "position": null,
+      "query_page_rows": 0,
+      "sitemaps": [
+        {
+          "property": "http://jonathanmwaniki.co.ke/",
+          "errors": 0,
+          "warnings": 0,
+          "error": "RuntimeError: Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]"
+        }
+      ],
+      "sitemap_errors": 0,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 1,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 0,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 0,
+      "not_indexed_urls": 0,
+      "indexing": [],
+      "collection_error": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]",
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:hillspringsacademy.sc.ke",
+      "host": "hillspringsacademy.sc.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 4.0,
+      "previous_clicks": 1.0,
+      "clicks_delta": 3.0,
+      "impressions": 133.0,
+      "previous_impressions": 36.0,
+      "impressions_delta": 97.0,
+      "ctr": 0.030075,
+      "position": 7.41,
+      "query_page_rows": 51,
+      "sitemaps": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.xml",
+          "last_submitted": "2026-11-15T14:53:43.783Z",
+          "last_downloaded": "2026-11-25T02:35:21.969Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "22",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.",
+          "last_submitted": "2026-11-15T14:48:03.863Z",
+          "last_downloaded": "2026-11-20T22:46:30.316Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 22,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 5,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/",
+          "user_canonical": "https://hillspringsacademy.sc.ke/",
+          "last_crawl_time": "2026-11-23T10:34:36Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/signup",
+            "https://hillspringsacademy.sc.ke/delete-account",
+            "https://hillspringsacademy.sc.ke/directors",
+            "https://hillspringsacademy.sc.ke/blog",
+            "https://hillspringsacademy.sc.ke/refund-policy"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/fees",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "user_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "last_crawl_time": "2026-11-20T09:08:45Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/FEES",
+            "https://hillspringsacademy.sc.ke/sitemap",
+            "https://hillspringsacademy.sc.ke/admissions"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/uniforms",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "user_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "last_crawl_time": "2026-11-19T04:23:40Z",
+          "referring_urls": [],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "user_canonical": null,
+          "last_crawl_time": "2026-11-20T19:29:22Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/reading-materials"
+          ],
+          "sitemap_urls": []
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/contact",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "user_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "last_crawl_time": "2026-11-13T13:12:34Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/faq"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    }
+  ],
+  "best_performers": [
+    {
+      "property": "sc-domain:hillspringsacademy.sc.ke",
+      "host": "hillspringsacademy.sc.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 4.0,
+      "previous_clicks": 1.0,
+      "clicks_delta": 3.0,
+      "impressions": 133.0,
+      "previous_impressions": 36.0,
+      "impressions_delta": 97.0,
+      "ctr": 0.030075,
+      "position": 7.41,
+      "query_page_rows": 51,
+      "sitemaps": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.xml",
+          "last_submitted": "2026-11-15T14:53:43.783Z",
+          "last_downloaded": "2026-11-25T02:35:21.969Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "22",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.",
+          "last_submitted": "2026-11-15T14:48:03.863Z",
+          "last_downloaded": "2026-11-20T22:46:30.316Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 22,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 5,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/",
+          "user_canonical": "https://hillspringsacademy.sc.ke/",
+          "last_crawl_time": "2026-11-23T10:34:36Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/signup",
+            "https://hillspringsacademy.sc.ke/delete-account",
+            "https://hillspringsacademy.sc.ke/directors",
+            "https://hillspringsacademy.sc.ke/blog",
+            "https://hillspringsacademy.sc.ke/refund-policy"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/fees",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "user_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "last_crawl_time": "2026-11-20T09:08:45Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/FEES",
+            "https://hillspringsacademy.sc.ke/sitemap",
+            "https://hillspringsacademy.sc.ke/admissions"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/uniforms",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "user_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "last_crawl_time": "2026-11-19T04:23:40Z",
+          "referring_urls": [],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "user_canonical": null,
+          "last_crawl_time": "2026-11-20T19:29:22Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/reading-materials"
+          ],
+          "sitemap_urls": []
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/contact",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "user_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "last_crawl_time": "2026-11-13T13:12:34Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/faq"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:zandani.co.ke",
+      "host": "zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 0.0,
+      "previous_clicks": 8.0,
+      "clicks_delta": -8.0,
+      "impressions": 26.0,
+      "previous_impressions": 42.0,
+      "impressions_delta": -16.0,
+      "ctr": 0.0,
+      "position": 4.0,
+      "query_page_rows": 2,
+      "sitemaps": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-static.xml",
+          "last_submitted": "2026-11-13T08:36:48.400Z",
+          "last_downloaded": "2026-11-13T08:36:48.978Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-categories.xml",
+          "last_submitted": "2026-11-13T08:36:48.310Z",
+          "last_downloaded": "2026-11-13T08:36:49.162Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "6",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-articles.xml",
+          "last_submitted": "2026-11-13T08:36:48.198Z",
+          "last_downloaded": "2026-11-13T08:36:50.247Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "1416",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/news-sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:48.069Z",
+          "last_downloaded": "2026-11-13T08:36:48.549Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "21",
+              "indexed": "0"
+            },
+            {
+              "type": "news",
+              "submitted": "21",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:47.915Z",
+          "last_downloaded": "2026-11-13T08:36:48.638Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://accaforge.zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-09T10:30:02.910Z",
+          "last_downloaded": "2026-11-09T10:30:04.150Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "55",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "http://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-09-03T09:27:06.674Z",
+          "last_downloaded": "2026-10-26T09:46:29.861Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 2,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 2,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 1555,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 1,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "url": "https://zandani.co.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://zandani.co.ke/",
+          "user_canonical": "https://zandani.co.ke/",
+          "last_crawl_time": "2026-11-25T02:04:43Z",
+          "referring_urls": [
+            "https://zandani.co.ke/article/how-to-use-music-to-reduce-pet-stress-in-2026",
+            "https://zandani.co.ke/article/trisha-khalid-sparks-debate-on-child-support-and-parental-roles",
+            "https://zandani.co.ke/article/radio-africa-group-presenters-swap-stations-following-listener-vote",
+            "https://zandani.co.ke/tag/pritty-vishy-motorbike",
+            "http://zandani.co.ke/"
+          ],
+          "sitemap_urls": []
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    }
+  ],
+  "biggest_gainers": [
+    {
+      "property": "sc-domain:hillspringsacademy.sc.ke",
+      "host": "hillspringsacademy.sc.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 4.0,
+      "previous_clicks": 1.0,
+      "clicks_delta": 3.0,
+      "impressions": 133.0,
+      "previous_impressions": 36.0,
+      "impressions_delta": 97.0,
+      "ctr": 0.030075,
+      "position": 7.41,
+      "query_page_rows": 51,
+      "sitemaps": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.xml",
+          "last_submitted": "2026-11-15T14:53:43.783Z",
+          "last_downloaded": "2026-11-25T02:35:21.969Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "22",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.",
+          "last_submitted": "2026-11-15T14:48:03.863Z",
+          "last_downloaded": "2026-11-20T22:46:30.316Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 22,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 5,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/",
+          "user_canonical": "https://hillspringsacademy.sc.ke/",
+          "last_crawl_time": "2026-11-23T10:34:36Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/signup",
+            "https://hillspringsacademy.sc.ke/delete-account",
+            "https://hillspringsacademy.sc.ke/directors",
+            "https://hillspringsacademy.sc.ke/blog",
+            "https://hillspringsacademy.sc.ke/refund-policy"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/fees",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "user_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "last_crawl_time": "2026-11-20T09:08:45Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/FEES",
+            "https://hillspringsacademy.sc.ke/sitemap",
+            "https://hillspringsacademy.sc.ke/admissions"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/uniforms",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "user_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "last_crawl_time": "2026-11-19T04:23:40Z",
+          "referring_urls": [],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "user_canonical": null,
+          "last_crawl_time": "2026-11-20T19:29:22Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/reading-materials"
+          ],
+          "sitemap_urls": []
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/contact",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "user_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "last_crawl_time": "2026-11-13T13:12:34Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/faq"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:zandani.co.ke",
+      "host": "zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 0.0,
+      "previous_clicks": 8.0,
+      "clicks_delta": -8.0,
+      "impressions": 26.0,
+      "previous_impressions": 42.0,
+      "impressions_delta": -16.0,
+      "ctr": 0.0,
+      "position": 4.0,
+      "query_page_rows": 2,
+      "sitemaps": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-static.xml",
+          "last_submitted": "2026-11-13T08:36:48.400Z",
+          "last_downloaded": "2026-11-13T08:36:48.978Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-categories.xml",
+          "last_submitted": "2026-11-13T08:36:48.310Z",
+          "last_downloaded": "2026-11-13T08:36:49.162Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "6",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-articles.xml",
+          "last_submitted": "2026-11-13T08:36:48.198Z",
+          "last_downloaded": "2026-11-13T08:36:50.247Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "1416",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/news-sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:48.069Z",
+          "last_downloaded": "2026-11-13T08:36:48.549Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "21",
+              "indexed": "0"
+            },
+            {
+              "type": "news",
+              "submitted": "21",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:47.915Z",
+          "last_downloaded": "2026-11-13T08:36:48.638Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://accaforge.zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-09T10:30:02.910Z",
+          "last_downloaded": "2026-11-09T10:30:04.150Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "55",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "http://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-09-03T09:27:06.674Z",
+          "last_downloaded": "2026-10-26T09:46:29.861Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 2,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 2,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 1555,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 1,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "url": "https://zandani.co.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://zandani.co.ke/",
+          "user_canonical": "https://zandani.co.ke/",
+          "last_crawl_time": "2026-11-25T02:04:43Z",
+          "referring_urls": [
+            "https://zandani.co.ke/article/how-to-use-music-to-reduce-pet-stress-in-2026",
+            "https://zandani.co.ke/article/trisha-khalid-sparks-debate-on-child-support-and-parental-roles",
+            "https://zandani.co.ke/article/radio-africa-group-presenters-swap-stations-following-listener-vote",
+            "https://zandani.co.ke/tag/pritty-vishy-motorbike",
+            "http://zandani.co.ke/"
+          ],
+          "sitemap_urls": []
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    }
+  ],
+  "biggest_decliners": [
+    {
+      "property": "sc-domain:zandani.co.ke",
+      "host": "zandani.co.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 0.0,
+      "previous_clicks": 8.0,
+      "clicks_delta": -8.0,
+      "impressions": 26.0,
+      "previous_impressions": 42.0,
+      "impressions_delta": -16.0,
+      "ctr": 0.0,
+      "position": 4.0,
+      "query_page_rows": 2,
+      "sitemaps": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-static.xml",
+          "last_submitted": "2026-11-13T08:36:48.400Z",
+          "last_downloaded": "2026-11-13T08:36:48.978Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-categories.xml",
+          "last_submitted": "2026-11-13T08:36:48.310Z",
+          "last_downloaded": "2026-11-13T08:36:49.162Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "6",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap-articles.xml",
+          "last_submitted": "2026-11-13T08:36:48.198Z",
+          "last_downloaded": "2026-11-13T08:36:50.247Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "1416",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/news-sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:48.069Z",
+          "last_downloaded": "2026-11-13T08:36:48.549Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "21",
+              "indexed": "0"
+            },
+            {
+              "type": "news",
+              "submitted": "21",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-13T08:36:47.915Z",
+          "last_downloaded": "2026-11-13T08:36:48.638Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 0,
+          "contents": []
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "https://accaforge.zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-11-09T10:30:02.910Z",
+          "last_downloaded": "2026-11-09T10:30:04.150Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "55",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "path": "http://zandani.co.ke/sitemap.xml",
+          "last_submitted": "2026-09-03T09:27:06.674Z",
+          "last_downloaded": "2026-10-26T09:46:29.861Z",
+          "is_pending": false,
+          "is_sitemap_index": true,
+          "errors": 0,
+          "warnings": 2,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 2,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 1555,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 1,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:zandani.co.ke",
+          "url": "https://zandani.co.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://zandani.co.ke/",
+          "user_canonical": "https://zandani.co.ke/",
+          "last_crawl_time": "2026-11-25T02:04:43Z",
+          "referring_urls": [
+            "https://zandani.co.ke/article/how-to-use-music-to-reduce-pet-stress-in-2026",
+            "https://zandani.co.ke/article/trisha-khalid-sparks-debate-on-child-support-and-parental-roles",
+            "https://zandani.co.ke/article/radio-africa-group-presenters-swap-stations-following-listener-vote",
+            "https://zandani.co.ke/tag/pritty-vishy-motorbike",
+            "http://zandani.co.ke/"
+          ],
+          "sitemap_urls": []
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    },
+    {
+      "property": "sc-domain:hillspringsacademy.sc.ke",
+      "host": "hillspringsacademy.sc.ke",
+      "permission_level": "siteOwner",
+      "health": "needs_attention",
+      "clicks": 4.0,
+      "previous_clicks": 1.0,
+      "clicks_delta": 3.0,
+      "impressions": 133.0,
+      "previous_impressions": 36.0,
+      "impressions_delta": 97.0,
+      "ctr": 0.030075,
+      "position": 7.41,
+      "query_page_rows": 51,
+      "sitemaps": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.xml",
+          "last_submitted": "2026-11-15T14:53:43.783Z",
+          "last_downloaded": "2026-11-25T02:35:21.969Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 0,
+          "warnings": 0,
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "22",
+              "indexed": "0"
+            }
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "path": "https://hillspringsacademy.sc.ke/sitemap.",
+          "last_submitted": "2026-11-15T14:48:03.863Z",
+          "last_downloaded": "2026-11-20T22:46:30.316Z",
+          "is_pending": false,
+          "is_sitemap_index": false,
+          "errors": 1,
+          "warnings": 0,
+          "contents": []
+        }
+      ],
+      "sitemap_errors": 1,
+      "sitemap_warnings": 0,
+      "sitemap_fetch_errors": 0,
+      "inspection_errors": 0,
+      "sitemap_submitted_urls": 22,
+      "sitemap_indexed_urls": 0,
+      "inspected_urls": 5,
+      "not_indexed_urls": 0,
+      "indexing": [
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/",
+          "user_canonical": "https://hillspringsacademy.sc.ke/",
+          "last_crawl_time": "2026-11-23T10:34:36Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/signup",
+            "https://hillspringsacademy.sc.ke/delete-account",
+            "https://hillspringsacademy.sc.ke/directors",
+            "https://hillspringsacademy.sc.ke/blog",
+            "https://hillspringsacademy.sc.ke/refund-policy"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/fees",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "user_canonical": "https://hillspringsacademy.sc.ke/fees",
+          "last_crawl_time": "2026-11-20T09:08:45Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/FEES",
+            "https://hillspringsacademy.sc.ke/sitemap",
+            "https://hillspringsacademy.sc.ke/admissions"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/uniforms",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "user_canonical": "https://hillspringsacademy.sc.ke/uniforms",
+          "last_crawl_time": "2026-11-19T04:23:40Z",
+          "referring_urls": [],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/reading-material/SST%20GRADE%204%20NOTES..pdf",
+          "user_canonical": null,
+          "last_crawl_time": "2026-11-20T19:29:22Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/reading-materials"
+          ],
+          "sitemap_urls": []
+        },
+        {
+          "property": "sc-domain:hillspringsacademy.sc.ke",
+          "url": "https://hillspringsacademy.sc.ke/contact",
+          "status": "PASS",
+          "coverage_state": "Submitted and indexed",
+          "indexing_state": "INDEXING_ALLOWED",
+          "robots_txt_state": "ALLOWED",
+          "page_fetch_state": "SUCCESSFUL",
+          "google_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "user_canonical": "https://hillspringsacademy.sc.ke/contact",
+          "last_crawl_time": "2026-11-13T13:12:34Z",
+          "referring_urls": [
+            "https://hillspringsacademy.sc.ke/faq"
+          ],
+          "sitemap_urls": [
+            "https://hillspringsacademy.sc.ke/sitemap.xml"
+          ]
+        }
+      ],
+      "collection_error": null,
+      "historical_error": null
+    }
+  ],
+  "events": [
+    {
+      "level": "error",
+      "property": "http://jonathanmwaniki.co.ke/",
+      "message": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]"
+    },
+    {
+      "level": "error",
+      "property": "http://jonathanmwaniki.co.ke/",
+      "message": "1 sitemap status requests failed"
+    },
+    {
+      "level": "error",
+      "property": "http://www.jonathanmwaniki.co.ke/",
+      "message": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]"
+    },
+    {
+      "level": "error",
+      "property": "http://www.jonathanmwaniki.co.ke/",
+      "message": "1 sitemap status requests failed"
+    },
+    {
+      "level": "error",
+      "property": "https://accaforge.zandani.co.ke/",
+      "message": "1 sitemap errors reported by Search Console"
+    },
+    {
+      "level": "error",
+      "property": "https://www.jonathanmwaniki.co.ke/",
+      "message": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site '[URL] See also: [URL]"
+    },
+    {
+      "level": "error",
+      "property": "https://www.jonathanmwaniki.co.ke/",
+      "message": "1 sitemap status requests failed"
+    },
+    {
+      "level": "error",
+      "property": "sc-domain:hillspringsacademy.sc.ke",
+      "message": "1 sitemap errors reported by Search Console"
+    },
+    {
+      "level": "error",
+      "property": "sc-domain:jonathanmwaniki.co.ke",
+      "message": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site 'sc-domain:jonathanmwaniki.co.ke'. See also: [URL]"
+    },
+    {
+      "level": "error",
+      "property": "sc-domain:jonathanmwaniki.co.ke",
+      "message": "1 sitemap status requests failed"
+    },
+    {
+      "level": "error",
+      "property": "sc-domain:mauamarketplace.pages.dev",
+      "message": "Search Console API returned HTTP 403 (reason=forbidden): User does not have sufficient permission for site 'sc-domain:mauamarketplace.pages.dev'. See also: [URL]"
+    },
+    {
+      "level": "error",
+      "property": "sc-domain:mauamarketplace.pages.dev",
+      "message": "1 sitemap status requests failed"
+    },
+    {
+      "level": "error",
+      "property": "sc-domain:zandani.co.ke",
+      "message": "1 sitemap errors reported by Search Console"
+    },
+    {
+      "level": "warning",
+      "property": "http://zandani.co.ke/",
+      "message": "2 sitemap warnings reported by Search Console"
+    },
+    {
+      "level": "warning",
+      "property": "sc-domain:zandani.co.ke",
+      "message": "2 sitemap warnings reported by Search Console"
+    }
+  ],
   "submission_history": []
 }
