@@ -191,6 +191,88 @@ def write_outputs(property_url: str, rows: list[dict[str, Any]], truncated: bool
     return summary
 
 
+
+def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: str, end: str) -> None:
+    """Create a human-readable daily report and prioritized SEO action plan."""
+    all_rows: list[dict[str, Any]] = []
+    for summary in summaries:
+        property_url = summary.get("property")
+        if not property_url or summary.get("error"):
+            continue
+        path = out_dir / f"{safe_name(property_url)}-opportunities.json"
+        if path.exists():
+            all_rows.extend(json.loads(path.read_text(encoding="utf-8")))
+
+    all_rows.sort(key=lambda row: (float(row.get("priority_score") or 0), float(row.get("impressions") or 0)), reverse=True)
+    lines = [
+        "# MAXIMO — Daily Search Console & SEO Report", "",
+        f"**Reporting window:** {start} to {end}  ",
+        f"**Generated (UTC):** {datetime.now(timezone.utc).isoformat()}  ",
+        f"**Properties discovered:** {len(summaries)}  ",
+        f"**Properties successfully collected:** {sum('error' not in item for item in summaries)}", "",
+        "## Executive summary", "",
+        f"- Question-query opportunities found: **{len(all_rows)}**",
+        f"- Total query/page rows collected: **{sum(int(item.get('rows_returned', 0)) for item in summaries)}**",
+        f"- Properties with collection errors: **{sum('error' in item for item in summaries)}**", "",
+        "## Highest-priority question opportunities", "",
+        "| Property | Question query | Landing page | Clicks | Impressions | CTR | Avg. position | Est. click gap |",
+        "|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for row in all_rows[:30]:
+        query = str(row.get("query", "")).replace("|", "/")
+        lines.append(
+            f"| {row.get('property','')} | {query} | {row.get('page','')} "
+            f"| {float(row.get('clicks') or 0):.0f} | {float(row.get('impressions') or 0):.0f} "
+            f"| {float(row.get('ctr') or 0):.1%} | {float(row.get('average_position') or 0):.1f} "
+            f"| {float(row.get('estimated_click_gap') or 0):.1f} |"
+        )
+    if not all_rows:
+        lines.append("| — | No qualifying question-query opportunities | — | — | — | — | — | — |")
+
+    lines += ["", "## Prioritized SEO action plan", ""]
+    if all_rows:
+        lines += [
+            "1. **Improve snippets first:** rewrite titles and meta descriptions for high-impression questions with CTR below the same-position baseline.",
+            "2. **Strengthen page-one contenders:** for positions 4–10, improve the direct answer, topical coverage, supporting evidence and relevant internal links.",
+            "3. **Build topical depth:** for positions 11–20, expand the best-matching existing page before creating a competing URL.",
+            "4. **Add question coverage:** use the exact query as a natural H2/FAQ heading and answer it directly near the top of the page.",
+            "5. **Avoid cannibalization:** consolidate near-duplicate intents on one strongest URL rather than creating thin pages for wording variations.",
+            "", "### Page-level work queue", "",
+        ]
+        seen: set[tuple[str, str]] = set()
+        for row in all_rows:
+            key = (str(row.get("property")), str(row.get("page")))
+            if key in seen:
+                continue
+            seen.add(key)
+            position = float(row.get("average_position") or 100)
+            if position <= 3:
+                action = "CTR/snippet refresh; preserve the strong ranking."
+            elif position <= 10:
+                action = "Improve the direct answer, page structure and internal links."
+            elif position <= 20:
+                action = "Expand intent coverage and strengthen topical relevance."
+            else:
+                action = "Validate intent and page fit before investing in expansion."
+            lines.append(
+                f"- **{row.get('page','')}** — lead query: “{row.get('query','')}” "
+                f"(position {position:.1f}, {float(row.get('impressions') or 0):.0f} impressions). {action}"
+            )
+            if len(seen) >= 15:
+                break
+    else:
+        lines.append("No qualifying query rows were returned. Check property coverage, date range and minimum-impression threshold.")
+
+    lines += [
+        "", "## Collection notes", "",
+        "- CTR comparisons use the same-property, same-position-bucket baseline; estimated click gaps are directional, not guaranteed gains.",
+        "- The default date window ends three days before collection to reduce reporting-latency effects.",
+        "- Cannibalization and content-decay conclusions require historical/page-level comparisons; they are not asserted from this single snapshot.", "",
+    ]
+    (out_dir / "daily-seo-report.md").write_text(chr(10).join(lines), encoding="utf-8")
+
+
+
 def upload_to_gcs(out_dir: Path, bucket_name: str, prefix: str) -> int:
     from google.cloud import storage
     client = storage.Client()
@@ -227,6 +309,7 @@ def main() -> int:
         "properties_succeeded": sum("error" not in item for item in summaries),
         "properties": summaries,
     }, indent=2), encoding="utf-8")
+    write_daily_report(summaries, output_dir, start, end)
     if not any("error" not in item for item in summaries):
         return 1
     bucket_name = os.getenv("GCS_BUCKET")

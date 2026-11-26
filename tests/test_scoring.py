@@ -73,6 +73,23 @@ class ScoringTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, r"accessNotConfigured"):
             api._request("https://example.test/api")
 
+    def test_daily_report_contains_prioritized_question_plan(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            property_url = "sc-domain:example.com"
+            (out / f"{collector.safe_name(property_url)}-opportunities.json").write_text(json.dumps([
+                {"property": property_url, "query": "how to improve seo", "page": "https://example.com/seo",
+                 "clicks": 3, "impressions": 100, "ctr": 0.03, "average_position": 6.2,
+                 "estimated_click_gap": 4.0, "priority_score": 8.0}
+            ]), encoding="utf-8")
+            collector.write_daily_report([{"property": property_url, "rows_returned": 100}], out, "2026-10-01", "2026-10-28")
+            report = (out / "daily-seo-report.md").read_text(encoding="utf-8")
+            self.assertIn("how to improve seo", report)
+            self.assertIn("Page-level work queue", report)
+
 
 if __name__ == "__main__":
     unittest.main()
