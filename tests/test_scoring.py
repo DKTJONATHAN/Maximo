@@ -127,6 +127,24 @@ class ScoringTests(unittest.TestCase):
             self.assertTrue(raw.exists())
             self.assertIn("how to choose a laptop", raw.read_text(encoding="utf-8"))
 
+    def test_daily_report_keeps_low_volume_questions_and_deduplicates_properties(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            row = {"query": "which school uniform is this", "page": "https://example.com/uniforms",
+                   "clicks": 0, "impressions": 1, "ctr": 0, "position": 12}
+            domain = "sc-domain:example.com"
+            prefix = "https://example.com/"
+            (out / f"{collector.safe_name(domain)}-search-performance.json").write_text(json.dumps([row]), encoding="utf-8")
+            (out / f"{collector.safe_name(prefix)}-search-performance.json").write_text(json.dumps([row]), encoding="utf-8")
+            collector.write_daily_report([{"property": domain, "rows_returned": 1}, {"property": prefix, "rows_returned": 1}], out, "2026-10-01", "2026-10-28")
+            report = (out / "daily-seo-report.md").read_text(encoding="utf-8")
+            self.assertIn("which school uniform is this", report)
+            self.assertIn("Question-query candidates found (all impression levels): **1**", report)
+            self.assertIn("Duplicate query/page rows suppressed across overlapping properties: **1**", report)
+
 
 if __name__ == "__main__":
     unittest.main()
