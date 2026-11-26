@@ -10,7 +10,7 @@ from dataclasses import asdict, dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 from gsc.history import previous_window, write_comparison_outputs
 from gsc.monitoring import build_dashboard_data
@@ -548,7 +548,16 @@ def main() -> int:
             if len(keys) < 2:
                 continue
             url = str(keys[1])
-            if url.startswith("https://") and url not in selected_urls:
+            host = urlparse(url).hostname or ""
+            if not url.startswith("https://"):
+                continue
+            if site_url.startswith("sc-domain:"):
+                domain = site_url.split(":", 1)[1].lower()
+                if host.lower() != domain and not host.lower().endswith("." + domain):
+                    continue
+            elif not url.startswith(site_url):
+                continue
+            if url not in selected_urls:
                 selected_urls.append(url)
             if len(selected_urls) >= 5:
                 break
