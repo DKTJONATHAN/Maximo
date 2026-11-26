@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
+from gsc.history import previous_window, write_comparison_outputs
+
 API_ROOT = "https://www.googleapis.com/webmasters/v3"
 SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 DEFAULT_QUESTION_REGEX = (
@@ -293,6 +295,56 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
     if not all_rows:
         lines.append("| — | No qualifying question-query opportunities | — | — | — | — | — | — |")
 
+    # Historical comparison: exact query/page pairs across equal-length settled windows.
+    historical_rows: list[dict[str, Any]] = []
+    historical_errors = [item for item in summaries if item.get("historical_error")]
+    for item in summaries:
+        property_url = item.get("property")
+        if not property_url or item.get("error"):
+            continue
+        comparison_path = out_dir / f"{safe_name(property_url)}-historical-comparison.json"
+        if comparison_path.exists():
+            historical_rows.extend(json.loads(comparison_path.read_text(encoding="utf-8")))
+    # Avoid double-counting identical rows exposed through overlapping domain/URL-prefix properties.
+    historical_deduped: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for row in historical_rows:
+        key = (row.get("query"), row.get("page"), row.get("clicks"), row.get("previous_clicks"),
+               row.get("impressions"), row.get("previous_impressions"), row.get("position"),
+               row.get("previous_position"))
+        current = historical_deduped.get(key)
+        if current is None or str(row.get("property", "")).startswith("sc-domain:"):
+            historical_deduped[key] = row
+    historical_rows = list(historical_deduped.values())
+    declining = [row for row in historical_rows if float(row.get("clicks_delta") or 0) < 0]
+    declining.sort(key=lambda row: (float(row.get("clicks_delta") or 0), float(row.get("impressions_delta") or 0)))
+    lines += [
+        "", "## Historical query/page movement", "",
+        f"- Query/page pairs compared across equal-length periods: **{len(historical_rows)}**",
+        f"- Pairs with fewer clicks than the previous period: **{len(declining)}**",
+        f"- Properties where the historical comparison failed: **{len(historical_errors)}**",
+        "",
+        "| Property | Query | Landing page | Clicks now | Clicks before | Change | Impressions change | Position change |",
+        "|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for row in declining[:25]:
+        pos_delta = row.get("position_delta")
+        position_change = f"{float(pos_delta):+.1f}" if pos_delta is not None else "n/a"
+        lines.append(
+            f"| {row.get('property','')} | {str(row.get('query','')).replace('|','/')} | {row.get('page','')} "
+            f"| {float(row.get('clicks') or 0):.0f} | {float(row.get('previous_clicks') or 0):.0f} "
+            f"| {float(row.get('clicks_delta') or 0):+.0f} | {float(row.get('impressions_delta') or 0):+.0f} "
+            f"| {position_change} |"
+        )
+    if not declining:
+        lines.append("| — | No declining query/page pairs detected in the returned rows | — | — | — | — | — | — |")
+    if historical_errors:
+        for item in historical_errors:
+            lines.append(f"- Historical comparison unavailable for {item.get('property', 'a property')}: {item.get('historical_error')}")
+    lines += [
+        "",
+        "Interpretation: a positive position change means ranking position worsened; a negative change means it improved. Missing pairs mean no row was returned in that period, not proof that the page was deindexed. Search Console query rows are sampled/top-row limited and low-volume queries may be anonymized.",
+    ]
+
     failed = [item for item in summaries if item.get("error")]
     if failed:
         lines += ["", "## Properties needing attention", ""]
@@ -387,8 +439,25 @@ def main() -> int:
         site_url = prop["siteUrl"]
         try:
             rows, truncated = api.query_all(site_url, start, end)
-            summaries.append(write_outputs(site_url, rows, truncated, start, end, output_dir))
-            print(f"Property {index}/{len(properties)} processed | rows={len(rows)} | truncated={truncated}")
+            summary = write_outputs(site_url, rows, truncated, start, end, output_dir)
+            summary["permission_level"] = prop.get("permissionLevel", "unknown")
+            prior_start, prior_end = previous_window(start, end)
+            try:
+                prior_rows, prior_truncated = api.query_all(site_url, prior_start, prior_end)
+                comparison = write_comparison_outputs(site_url, rows, prior_rows, output_dir, safe_name(site_url))
+                summary.update({
+                    "previous_start_date": prior_start, "previous_end_date": prior_end,
+                    "previous_rows_returned": len(prior_rows),
+                    "historical_pairs_compared": len(comparison),
+                    "previous_truncated": prior_truncated,
+                })
+            except Exception as history_exc:
+                # Preserve the successful current-period report if the historical read alone fails.
+                safe_history_error = re.sub(r"https?://\\S+", "[URL]", str(history_exc))
+                safe_history_error = re.sub(r"[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}", "[email]", safe_history_error)
+                summary["historical_error"] = f"{type(history_exc).__name__}: {safe_history_error[:240]}"
+            summaries.append(summary)
+            print(f"Property {index}/{len(properties)} processed | rows={len(rows)} | historical={summary.get('historical_pairs_compared', 'unavailable')} | truncated={truncated}")
         except Exception as exc:
             # Avoid printing property URLs or provider error text into public workflow logs.
             safe_error = re.sub(r"https?://\S+", "[URL]", str(exc))
@@ -398,7 +467,7 @@ def main() -> int:
                 if secret_value:
                     safe_error = safe_error.replace(secret_value, replacement)
             print(f"Property {index}/{len(properties)} failed | {type(exc).__name__}: {safe_error[:300]}", file=sys.stderr)
-            summaries.append({"property": site_url, "error": type(exc).__name__, "error_message": safe_error[:300]})
+            summaries.append({"property": site_url, "permission_level": prop.get("permissionLevel", "unknown"), "error": type(exc).__name__, "error_message": safe_error[:300]})
     (output_dir / "run-summary.json").write_text(json.dumps({
         "start_date": start, "end_date": end, "properties_discovered": len(properties),
         "properties_succeeded": sum("error" not in item for item in summaries),
