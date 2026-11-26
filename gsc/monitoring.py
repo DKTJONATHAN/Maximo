@@ -143,7 +143,28 @@ def build_dashboard_data(
             "inspected_urls": sum(p["inspected_urls"] for p in properties),
             "not_indexed_urls": sum(p["not_indexed_urls"] for p in properties),
         },
-        "properties": properties, "best_performers": performers[:8],
+        query_rows = []
+    unique_query_rows = {}
+    property_by_key = {}
+    for summary in summaries:
+        site = str(summary.get("property") or "")
+        slug = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in site).strip("._-")[:90] or "property"
+        for row in _read(out_dir / f"{slug}-search-performance.json", []):
+            key = (row.get("query"), row.get("page"), row.get("clicks"), row.get("impressions"), row.get("ctr"), row.get("position"))
+            property_by_key.setdefault(key, site)
+    for row in portfolio_current:
+        key = (row.get("query"), row.get("page"), row.get("clicks"), row.get("impressions"), row.get("ctr"), row.get("position"))
+        unique_query_rows[key] = row
+    for key, row in unique_query_rows.items():
+        site = property_by_key.get(key, "")
+        host = site.replace("sc-domain:", "")
+        if site.startswith("http"):
+            host = urlparse(site).netloc
+        query_rows.append({"property": site, "host": host, "query": row.get("query", ""), "page": row.get("page", ""),
+                           "clicks": _number(row, "clicks"), "impressions": _number(row, "impressions"),
+                           "ctr": _number(row, "ctr"), "position": _number(row, "position")})
+    query_rows.sort(key=lambda item: (item["impressions"], item["clicks"]), reverse=True)
+    "properties": properties, "query_rows": query_rows[:5000], "best_performers": performers[:8],
         "biggest_gainers": gainers[:8], "biggest_decliners": decliners[:8],
         "events": sorted(events, key=lambda item: (0 if item["level"] == "error" else 1, item.get("property", "")))[:100],
         "submission_history": submission_history[-100:],
