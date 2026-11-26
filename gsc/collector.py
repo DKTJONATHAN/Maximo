@@ -241,6 +241,16 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
         row["bucket_baseline_ctr"] = clicks / impressions if impressions else 0.0
         row["estimated_click_gap"] = max(0.0, row["bucket_baseline_ctr"] - float(row.get("ctr") or 0)) * float(row.get("impressions") or 0)
 
+    raw_row_count = len(raw_rows)
+    deduplicated: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for row in raw_rows:
+        key = (row.get("query"), row.get("page"), row.get("clicks"), row.get("impressions"), row.get("ctr"), row.get("position"))
+        current = deduplicated.get(key)
+        if current is None or (str(row.get("property", "")).startswith("sc-domain:") and not str(current.get("property", "")).startswith("sc-domain:")):
+            deduplicated[key] = row
+    raw_rows = list(deduplicated.values())
+    duplicate_rows_suppressed = raw_row_count - len(raw_rows)
+    question_candidates = [row for row in raw_rows if QUESTION_RE.search(str(row.get("query", "")))]
     all_rows.sort(key=lambda row: (float(row.get("priority_score") or 0), float(row.get("impressions") or 0)), reverse=True)
     lines = [
         "# MAXIMO — Daily Search Console & SEO Report", "",
@@ -249,9 +259,25 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
         f"**Properties discovered:** {len(summaries)}  ",
         f"**Properties successfully collected:** {sum('error' not in item for item in summaries)}", "",
         "## Executive summary", "",
-        f"- Question-query opportunities found: **{len(all_rows)}**",
+        f"- Question-query candidates found (all impression levels): **{len(question_candidates)}**",
+        f"- Priority-qualified question opportunities (minimum {MIN_IMPRESSIONS} impressions): **{len(all_rows)}**",
+        f"- Duplicate query/page rows suppressed across overlapping properties: **{duplicate_rows_suppressed}**",
         f"- Total query/page rows collected: **{sum(int(item.get('rows_returned', 0)) for item in summaries)}**",
         f"- Properties with collection errors: **{sum('error' in item for item in summaries)}**", "",
+        "## Question-query mining (all impression levels)", "",
+        "| Property | Question query | Landing page | Clicks | Impressions | CTR | Position |",
+        "|---|---|---|---:|---:|---:|---:|",
+    ]
+    for row in sorted(question_candidates, key=lambda item: (float(item.get("impressions") or 0), float(item.get("position") or 100)), reverse=True):
+        lines.append(
+            f"| {row.get('property','')} | {str(row.get('query','')).replace('|','/')} | {row.get('page','')} "
+            f"| {float(row.get('clicks') or 0):.0f} | {float(row.get('impressions') or 0):.0f} "
+            f"| {float(row.get('ctr') or 0):.1%} | {float(row.get('position') or 0):.1f} |"
+        )
+    if not question_candidates:
+        lines.append("| — | No matching question queries in this date range | — | — | — | — | — |")
+
+    lines += [
         "## Highest-priority question opportunities", "",
         "| Property | Question query | Landing page | Clicks | Impressions | CTR | Avg. position | Est. click gap |",
         "|---|---|---|---:|---:|---:|---:|---:|",
