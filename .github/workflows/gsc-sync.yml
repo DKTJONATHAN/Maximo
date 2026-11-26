@@ -78,6 +78,7 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       - name: Collect Search Console data
+        id: collect
         env:
           GSC_CLIENT_ID: ${{ secrets.GSC_CLIENT_ID }}
           GSC_CLIENT_SECRET: ${{ secrets.GSC_CLIENT_SECRET }}
@@ -90,14 +91,14 @@ jobs:
           GSC_MIN_IMPRESSIONS: ${{ vars.GSC_MIN_IMPRESSIONS }}
         run: python -m gsc.collector
       - name: Upload downloadable Search Console reports
-        if: ${{ success() }}
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: maximo-gsc-seo-report-${{ github.run_id }}
           path: reports/gsc/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
       - name: Report artifact visibility warning
-        if: ${{ success() && github.event.repository.private == false }}
+        if: ${{ always() && !cancelled() && github.event.repository.private == false }}
         run: |
           echo "::warning::This repository is public. Anyone who can access the repository can download these Search Console report artifacts. Do not store confidential client or third-party property data here."
