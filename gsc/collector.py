@@ -254,9 +254,11 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
     duplicate_rows_suppressed = raw_row_count - len(raw_rows)
     question_candidates = [row for row in raw_rows if QUESTION_RE.search(str(row.get("query", "")))]
     all_rows.sort(key=lambda row: (float(row.get("priority_score") or 0), float(row.get("impressions") or 0)), reverse=True)
+    prior_start, prior_end = previous_window(start, end)
     lines = [
         "# MAXIMO — Daily Search Console & SEO Report", "",
         f"**Reporting window:** {start} to {end}  ",
+        f"**Comparison window:** {prior_start} to {prior_end}  ",
         f"**Generated (UTC):** {datetime.now(timezone.utc).isoformat()}  ",
         f"**Properties discovered:** {len(summaries)}  ",
         f"**Properties successfully collected:** {sum('error' not in item for item in summaries)}", "",
@@ -337,6 +339,28 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
         )
     if not declining:
         lines.append("| — | No declining query/page pairs detected in the returned rows | — | — | — | — | — | — |")
+    page_totals: dict[tuple[str, str], dict[str, float]] = {}
+    for row in historical_rows:
+        key = (str(row.get("property", "")), str(row.get("page", "")))
+        totals = page_totals.setdefault(key, {"clicks_delta": 0.0, "impressions_delta": 0.0, "clicks": 0.0, "previous_clicks": 0.0})
+        for metric in totals:
+            totals[metric] += float(row.get(metric) or 0)
+    page_declines = sorted(
+        ((prop, page, metrics) for (prop, page), metrics in page_totals.items() if metrics["clicks_delta"] < 0),
+        key=lambda item: item[2]["clicks_delta"],
+    )
+    lines += [
+        "", "### Pages with the largest click losses", "",
+        "| Property | Page | Clicks now | Clicks before | Change | Impressions change |",
+        "|---|---|---:|---:|---:|---:|",
+    ]
+    for prop, page, metrics in page_declines[:15]:
+        lines.append(
+            f"| {prop} | {page} | {metrics['clicks']:.0f} | {metrics['previous_clicks']:.0f} "
+            f"| {metrics['clicks_delta']:+.0f} | {metrics['impressions_delta']:+.0f} |"
+        )
+    if not page_declines:
+        lines.append("| — | No page-level click losses detected | — | — | — | — |")
     if historical_errors:
         for item in historical_errors:
             lines.append(f"- Historical comparison unavailable for {item.get('property', 'a property')}: {item.get('historical_error')}")
@@ -349,7 +373,9 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
     if failed:
         lines += ["", "## Properties needing attention", ""]
         for item in failed:
-            lines.append(f"- **{item.get('property', 'Unknown property')}** — {item.get('error_message', item.get('error', 'Collection failed'))}")
+            lines.append(f"- **{item.get('property', 'Unknown property')}** (Google access: {item.get('permission_level', 'unknown')}) — {item.get('error_message', item.get('error', 'Collection failed'))}")
+            if "403" in str(item.get("error_message", "")) or "forbidden" in str(item.get("error_message", "")).lower():
+                lines.append("  - **Required action:** open Google Search Console → Settings → Users and permissions and grant the Google account connected to MAXIMO at least **Restricted** access to this property. Re-run the collector after access is granted. MAXIMO uses read-only OAuth and cannot grant itself access.")
     lines += [
         "", "## Search query and landing-page opportunities (all queries)", "",
         "| Property | Search query | Landing page | Clicks | Impressions | CTR | Position | Est. CTR click gap |",
@@ -453,8 +479,8 @@ def main() -> int:
                 })
             except Exception as history_exc:
                 # Preserve the successful current-period report if the historical read alone fails.
-                safe_history_error = re.sub(r"https?://\\S+", "[URL]", str(history_exc))
-                safe_history_error = re.sub(r"[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}", "[email]", safe_history_error)
+                safe_history_error = re.sub(r"https?://\S+", "[URL]", str(history_exc))
+                safe_history_error = re.sub(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}", "[email]", safe_history_error)
                 summary["historical_error"] = f"{type(history_exc).__name__}: {safe_history_error[:240]}"
             summaries.append(summary)
             print(f"Property {index}/{len(properties)} processed | rows={len(rows)} | historical={summary.get('historical_pairs_compared', 'unavailable')} | truncated={truncated}")
