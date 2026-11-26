@@ -8,6 +8,14 @@ on:
       - "tests/**"
       - "requirements.txt"
       - ".github/workflows/gsc-sync.yml"
+  push:
+    branches: [main]
+    paths:
+      - "gsc/**"
+      - "scripts/authorize_gsc.py"
+      - "tests/**"
+      - "requirements.txt"
+      - ".github/workflows/gsc-sync.yml"
   workflow_dispatch:
     inputs:
       start_date:
@@ -23,16 +31,15 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: gsc-sync
   cancel-in-progress: false
 
 jobs:
-  collect:
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -45,14 +52,32 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run tests
         run: python -m unittest discover -s tests -v
-      - name: Authenticate to Google Cloud (optional persistent archive)
-        if: ${{ github.event_name != 'pull_request' && vars.GCP_WIF_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' && vars.GCS_BUCKET != '' }}
+
+  collect:
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Authenticate to Google Cloud (optional private archive)
+        if: ${{ vars.GCP_WIF_PROVIDER != '' && vars.GCP_SERVICE_ACCOUNT != '' && vars.GCS_BUCKET != '' }}
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       - name: Collect Search Console data
-        if: ${{ github.event_name != 'pull_request' }}
         env:
           GSC_CLIENT_ID: ${{ secrets.GSC_CLIENT_ID }}
           GSC_CLIENT_SECRET: ${{ secrets.GSC_CLIENT_SECRET }}
@@ -64,11 +89,16 @@ jobs:
           GSC_QUESTION_REGEX: ${{ vars.GSC_QUESTION_REGEX }}
           GSC_MIN_IMPRESSIONS: ${{ vars.GSC_MIN_IMPRESSIONS }}
         run: python -m gsc.collector
-      - name: Upload reports to GitHub Actions artifact
-        if: always() && github.event_name != 'pull_request'
+      - name: Explain secure report delivery
+        if: ${{ success() && github.event.repository.private == false && (vars.GCS_BUCKET == '' || vars.GCP_WIF_PROVIDER == '' || vars.GCP_SERVICE_ACCOUNT == '') }}
+        run: |
+          echo "This repository is public. Search Console report files were not uploaded as public artifacts."
+          echo "Configure private Google Cloud Storage archival to retain and retrieve reports."
+      - name: Upload reports to GitHub Actions artifact (private repositories only)
+        if: ${{ success() && github.event.repository.private == true }}
         uses: actions/upload-artifact@v4
         with:
           name: gsc-reports-${{ github.run_id }}
           path: reports/gsc/
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 30
