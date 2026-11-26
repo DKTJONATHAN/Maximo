@@ -171,6 +171,25 @@ def write_outputs(property_url: str, rows: list[dict[str, Any]], truncated: bool
     out_dir.mkdir(parents=True, exist_ok=True)
     opportunities = build_opportunities(property_url, rows)
     slug = safe_name(property_url)
+    # Preserve the complete query/page dataset as well as the question-only opportunity subset.
+    raw_records = []
+    for row in rows:
+        keys = row.get("keys") or []
+        raw_records.append({
+            "query": str(keys[0]) if len(keys) > 0 else "",
+            "page": str(keys[1]) if len(keys) > 1 else "",
+            "clicks": float(row.get("clicks") or 0),
+            "impressions": float(row.get("impressions") or 0),
+            "ctr": float(row.get("ctr") or 0),
+            "position": float(row.get("position") or 0),
+        })
+    raw_json = out_dir / f"{slug}-search-performance.json"
+    raw_json.write_text(json.dumps(raw_records, indent=2), encoding="utf-8")
+    raw_csv = out_dir / f"{slug}-search-performance.csv"
+    with raw_csv.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["query", "page", "clicks", "impressions", "ctr", "position"])
+        writer.writeheader()
+        writer.writerows(raw_records)
     csv_path = out_dir / f"{slug}-opportunities.csv"
     fields = list(asdict(opportunities[0]).keys()) if opportunities else list(Opportunity.__dataclass_fields__.keys())
     with csv_path.open("w", newline="", encoding="utf-8") as handle:
@@ -195,6 +214,7 @@ def write_outputs(property_url: str, rows: list[dict[str, Any]], truncated: bool
 def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: str, end: str) -> None:
     """Create a human-readable daily report and prioritized SEO action plan."""
     all_rows: list[dict[str, Any]] = []
+    raw_rows: list[dict[str, Any]] = []
     for summary in summaries:
         property_url = summary.get("property")
         if not property_url or summary.get("error"):
@@ -202,6 +222,24 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
         path = out_dir / f"{safe_name(property_url)}-opportunities.json"
         if path.exists():
             all_rows.extend(json.loads(path.read_text(encoding="utf-8")))
+        raw_path = out_dir / f"{safe_name(property_url)}-search-performance.json"
+        if raw_path.exists():
+            for raw in json.loads(raw_path.read_text(encoding="utf-8")):
+                raw["property"] = property_url
+                raw_rows.append(raw)
+
+    # Same-property, same-position-bucket CTR baselines for all queries, not just question phrasing.
+    baselines: dict[tuple[str, int], list[float]] = {}
+    for row in raw_rows:
+        key = (str(row.get("property")), bucket(float(row.get("position") or 100)))
+        totals = baselines.setdefault(key, [0.0, 0.0])
+        totals[0] += float(row.get("clicks") or 0)
+        totals[1] += float(row.get("impressions") or 0)
+    for row in raw_rows:
+        key = (str(row.get("property")), bucket(float(row.get("position") or 100)))
+        clicks, impressions = baselines[key]
+        row["bucket_baseline_ctr"] = clicks / impressions if impressions else 0.0
+        row["estimated_click_gap"] = max(0.0, row["bucket_baseline_ctr"] - float(row.get("ctr") or 0)) * float(row.get("impressions") or 0)
 
     all_rows.sort(key=lambda row: (float(row.get("priority_score") or 0), float(row.get("impressions") or 0)), reverse=True)
     lines = [
@@ -234,6 +272,23 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
         lines += ["", "## Properties needing attention", ""]
         for item in failed:
             lines.append(f"- **{item.get('property', 'Unknown property')}** — {item.get('error_message', item.get('error', 'Collection failed'))}")
+    lines += [
+        "", "## Search query and landing-page opportunities (all queries)", "",
+        "| Property | Search query | Landing page | Clicks | Impressions | CTR | Position | Est. CTR click gap |",
+        "|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    ranked_raw = sorted(raw_rows, key=lambda row: (float(row.get("estimated_click_gap") or 0), float(row.get("impressions") or 0)), reverse=True)
+    for row in ranked_raw[:30]:
+        query = str(row.get("query", "")).replace("|", "/")
+        lines.append(
+            f"| {row.get('property','')} | {query} | {row.get('page','')} "
+            f"| {float(row.get('clicks') or 0):.0f} | {float(row.get('impressions') or 0):.0f} "
+            f"| {float(row.get('ctr') or 0):.1%} | {float(row.get('position') or 0):.1f} "
+            f"| {float(row.get('estimated_click_gap') or 0):.1f} |"
+        )
+    if not raw_rows:
+        lines.append("| — | No query/page rows returned | — | — | — | — | — | — |")
+
     lines += ["", "## Prioritized SEO action plan", ""]
     if all_rows:
         lines += [
@@ -245,23 +300,26 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
             "", "### Page-level work queue", "",
         ]
         seen: set[tuple[str, str]] = set()
-        for row in all_rows:
+        queue = ranked_raw if raw_rows else all_rows
+        for row in queue:
             key = (str(row.get("property")), str(row.get("page")))
             if key in seen:
                 continue
             seen.add(key)
-            position = float(row.get("average_position") or 100)
-            if position <= 3:
-                action = "CTR/snippet refresh; preserve the strong ranking."
+            position = float(row.get("position", row.get("average_position", 100)) or 100)
+            impressions = float(row.get("impressions") or 0)
+            query = str(row.get("query", ""))
+            if position <= 3 and float(row.get("estimated_click_gap") or 0) > 0:
+                action = "Rewrite title/meta description to lift CTR while protecting the strong ranking."
             elif position <= 10:
-                action = "Improve the direct answer, page structure and internal links."
+                action = "Improve the direct answer, add useful supporting sections and strengthen internal links."
             elif position <= 20:
-                action = "Expand intent coverage and strengthen topical relevance."
+                action = "Expand intent coverage and topical depth on this existing URL."
             else:
-                action = "Validate intent and page fit before investing in expansion."
+                action = "Validate search intent and content fit before investing in a major rewrite."
             lines.append(
-                f"- **{row.get('page','')}** — lead query: “{row.get('query','')}” "
-                f"(position {position:.1f}, {float(row.get('impressions') or 0):.0f} impressions). {action}"
+                f"- **{row.get('page','')}** — lead query: “{query}” "
+                f"(position {position:.1f}, {impressions:.0f} impressions). {action}"
             )
             if len(seen) >= 15:
                 break
