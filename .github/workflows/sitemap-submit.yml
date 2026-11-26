@@ -1,0 +1,58 @@
+name: Submit sitemap to Google Search Console
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Search Console property (for example sc-domain:example.com)
+        required: true
+        type: string
+      sitemap_url:
+        description: Full URL of an existing sitemap
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sitemap-submit
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Google authentication dependencies
+        run: pip install -r requirements.txt
+      - name: Submit sitemap and record outcome
+        id: submit
+        continue-on-error: true
+        env:
+          GSC_WRITE_CLIENT_ID: ${{ secrets.GSC_WRITE_CLIENT_ID }}
+          GSC_WRITE_CLIENT_SECRET: ${{ secrets.GSC_WRITE_CLIENT_SECRET }}
+          GSC_WRITE_REFRESH_TOKEN: ${{ secrets.GSC_WRITE_REFRESH_TOKEN }}
+          SITE_URL: ${{ inputs.site_url }}
+          SITEMAP_URL: ${{ inputs.sitemap_url }}
+        run: python scripts/submit_sitemap.py --site-url "$SITE_URL" --sitemap-url "$SITEMAP_URL"
+      - name: Publish submission history to dashboard
+        if: ${{ always() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p docs/data
+          git add docs/data/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: record sitemap submission result"
+            git push
+          fi
+      - name: Fail workflow when Google rejected the submission
+        if: ${{ steps.submit.outcome == 'failure' }}
+        run: exit 1

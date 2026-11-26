@@ -10,9 +10,10 @@ from dataclasses import asdict, dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 from gsc.history import previous_window, write_comparison_outputs
+from gsc.monitoring import build_dashboard_data
 
 API_ROOT = "https://www.googleapis.com/webmasters/v3"
 SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
@@ -133,6 +134,30 @@ class SearchConsole:
             {"siteUrl": item["siteUrl"], "permissionLevel": item.get("permissionLevel", "unknown")}
             for item in data.get("siteEntry", [])
         ]
+
+    def sitemaps(self, site_url: str) -> list[dict[str, Any]]:
+        endpoint = f"{API_ROOT}/sites/{quote(site_url, safe='')}/sitemaps"
+        return self._request(endpoint).get("sitemap", [])
+
+    def inspect_url(self, site_url: str, inspection_url: str) -> dict[str, Any]:
+        endpoint = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
+        payload = {"siteUrl": site_url, "inspectionUrl": inspection_url, "languageCode": "en-US"}
+        response = self._request(endpoint, method="POST", payload=payload)
+        result = response.get("inspectionResult", {})
+        status = result.get("indexStatusResult", {})
+        return {
+            "property": site_url, "url": inspection_url,
+            "status": status.get("verdict", "UNKNOWN"),
+            "coverage_state": status.get("coverageState"),
+            "indexing_state": status.get("indexingState"),
+            "robots_txt_state": status.get("robotsTxtState"),
+            "page_fetch_state": status.get("pageFetchState"),
+            "google_canonical": status.get("googleCanonical"),
+            "user_canonical": status.get("userCanonical"),
+            "last_crawl_time": status.get("lastCrawlTime"),
+            "referring_urls": status.get("referringUrls", [])[:5],
+            "sitemap_urls": status.get("sitemap", [])[:5],
+        }
 
     def query_all(self, site_url: str, start: str, end: str) -> tuple[list[dict[str, Any]], bool]:
         rows: list[dict[str, Any]] = []
@@ -461,10 +486,12 @@ def main() -> int:
     if not properties:
         raise RuntimeError("The connected Google account has no accessible Search Console properties")
     summaries: list[dict[str, Any]] = []
+    rows_by_property: dict[str, list[dict[str, Any]]] = {}
     for index, prop in enumerate(properties, start=1):
         site_url = prop["siteUrl"]
         try:
             rows, truncated = api.query_all(site_url, start, end)
+            rows_by_property[site_url] = rows
             summary = write_outputs(site_url, rows, truncated, start, end, output_dir)
             summary["permission_level"] = prop.get("permissionLevel", "unknown")
             prior_start, prior_end = previous_window(start, end)
@@ -494,10 +521,72 @@ def main() -> int:
                     safe_error = safe_error.replace(secret_value, replacement)
             print(f"Property {index}/{len(properties)} failed | {type(exc).__name__}: {safe_error[:300]}", file=sys.stderr)
             summaries.append({"property": site_url, "permission_level": prop.get("permissionLevel", "unknown"), "error": type(exc).__name__, "error_message": safe_error[:300]})
+    sitemap_results: list[dict[str, Any]] = []
+    inspection_results: list[dict[str, Any]] = []
+    for index, prop in enumerate(properties, start=1):
+        site_url = prop["siteUrl"]
+        try:
+            for sitemap in api.sitemaps(site_url):
+                sitemap_results.append({
+                    "property": site_url, "path": sitemap.get("path"),
+                    "last_submitted": sitemap.get("lastSubmitted"),
+                    "last_downloaded": sitemap.get("lastDownloaded"),
+                    "is_pending": sitemap.get("isPending", False),
+                    "is_sitemap_index": sitemap.get("isSitemapsIndex", False),
+                    "errors": int(sitemap.get("errors") or 0),
+                    "warnings": int(sitemap.get("warnings") or 0),
+                    "contents": sitemap.get("contents", []),
+                })
+        except Exception as sitemap_exc:
+            safe_error = re.sub(r"https?://\S+", "[URL]", str(sitemap_exc))
+            sitemap_results.append({"property": site_url, "errors": 0, "warnings": 0, "error": f"{type(sitemap_exc).__name__}: {safe_error[:240]}"})
+        candidates = rows_by_property.get(site_url, [])
+        # Inspect a small, high-value sample daily; this uses a fraction of Google's 2,000/day/property quota.
+        selected_urls: list[str] = []
+        for row in sorted(candidates, key=lambda item: (float(item.get("clicks") or 0), float(item.get("impressions") or 0)), reverse=True):
+            keys = row.get("keys") or []
+            if len(keys) < 2:
+                continue
+            url = str(keys[1])
+            host = urlparse(url).hostname or ""
+            if not url.startswith("https://"):
+                continue
+            if site_url.startswith("sc-domain:"):
+                domain = site_url.split(":", 1)[1].lower()
+                if host.lower() != domain and not host.lower().endswith("." + domain):
+                    continue
+            elif not url.startswith(site_url):
+                continue
+            if url not in selected_urls:
+                selected_urls.append(url)
+            if len(selected_urls) >= 5:
+                break
+        for url in selected_urls:
+            try:
+                inspection_results.append(api.inspect_url(site_url, url))
+            except Exception as inspection_exc:
+                safe_error = re.sub(r"https?://\S+", "[URL]", str(inspection_exc))
+                inspection_results.append({"property": site_url, "url": url, "status": "ERROR", "error": f"{type(inspection_exc).__name__}: {safe_error[:240]}"})
+        print(f"Monitoring {index}/{len(properties)} | sitemaps={sum(1 for x in sitemap_results if x.get('property') == site_url)} | inspected={len(selected_urls)}")
+
+    submission_history: list[dict[str, Any]] = []
+    for history_path in (Path("docs/data/sitemap-submissions.json"), Path("docs/data/indexnow-submissions.json")):
+        try:
+            history = json.loads(history_path.read_text(encoding="utf-8")) if history_path.exists() else []
+            if isinstance(history, list):
+                submission_history.extend(history)
+        except (OSError, json.JSONDecodeError):
+            continue
+    submission_history = sorted(submission_history, key=lambda item: item.get("submitted_at", ""))[-100:]
+    dashboard = build_dashboard_data(
+        output_dir, summaries, start, end, sitemap_results, inspection_results, submission_history
+    )
+    (output_dir / "dashboard.json").write_text(json.dumps(dashboard, indent=2), encoding="utf-8")
     (output_dir / "run-summary.json").write_text(json.dumps({
         "start_date": start, "end_date": end, "properties_discovered": len(properties),
         "properties_succeeded": sum("error" not in item for item in summaries),
-        "properties": summaries,
+        "properties": summaries, "sitemaps": sitemap_results,
+        "url_inspections": inspection_results,
     }, indent=2), encoding="utf-8")
     write_daily_report(summaries, output_dir, start, end)
     if not any("error" not in item for item in summaries):

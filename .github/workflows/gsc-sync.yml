@@ -4,18 +4,24 @@ on:
   pull_request:
     paths:
       - "gsc/**"
-      - "scripts/authorize_gsc.py"
+      - "scripts/**"
       - "tests/**"
       - "requirements.txt"
       - ".github/workflows/gsc-sync.yml"
+      - "docs/dashboard.html"
+      - ".github/workflows/sitemap-submit.yml"
+      - ".github/workflows/indexnow-submit.yml"
   push:
     branches: [main]
     paths:
       - "gsc/**"
-      - "scripts/authorize_gsc.py"
+      - "scripts/**"
       - "tests/**"
       - "requirements.txt"
       - ".github/workflows/gsc-sync.yml"
+      - "docs/dashboard.html"
+      - ".github/workflows/sitemap-submit.yml"
+      - ".github/workflows/indexnow-submit.yml"
   workflow_dispatch:
     inputs:
       start_date:
@@ -59,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - name: Check out repository
@@ -98,6 +104,19 @@ jobs:
           path: reports/gsc/
           if-no-files-found: warn
           retention-days: 30
+      - name: Publish dashboard snapshot to GitHub Pages
+        if: ${{ always() && !cancelled() && github.event_name != 'pull_request' && hashFiles('reports/gsc/dashboard.json') != '' }}
+        run: |
+          test -s reports/gsc/dashboard.json
+          mkdir -p docs/data
+          cp reports/gsc/dashboard.json docs/data/dashboard.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/dashboard.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh website command centre data"
+            git push
+          fi
       - name: Report artifact visibility warning
         if: ${{ always() && !cancelled() && github.event.repository.private == false }}
         run: |

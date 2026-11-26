@@ -1,0 +1,55 @@
+name: Submit URLs through IndexNow
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        description: Exact verified hostname, for example www.example.com
+        required: true
+        type: string
+      urls:
+        description: HTTPS URLs on that exact host, one per line (maximum 100)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: indexnow-submit
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Prepare URL batch
+        env:
+          URLS: ${{ inputs.urls }}
+        run: |
+          mkdir -p reports/indexnow
+          printf '%s\n' "$URLS" > reports/indexnow/urls.txt
+      - name: Submit and verify IndexNow key
+        id: submit
+        continue-on-error: true
+        env:
+          INDEXNOW_API_KEY: ${{ secrets.INDEXNOW_API_KEY }}
+          HOST: ${{ inputs.host }}
+        run: python scripts/submit_indexnow.py --host "$HOST" --urls-file reports/indexnow/urls.txt
+      - name: Publish submission history to dashboard
+        if: ${{ always() }}
+        run: |
+          mkdir -p docs/data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: record IndexNow submission result"
+            git push
+          fi
+      - name: Fail workflow when IndexNow rejected the batch
+        if: ${{ steps.submit.outcome == 'failure' }}
+        run: exit 1
