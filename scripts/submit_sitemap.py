@@ -48,7 +48,9 @@ def append_history(record: dict) -> None:
     dashboard_path = Path("docs/data/dashboard.json")
     try:
         dashboard = json.loads(dashboard_path.read_text(encoding="utf-8"))
-        dashboard["submission_history"] = history
+        indexnow_path = Path("docs/data/indexnow-submissions.json")
+        indexnow = json.loads(indexnow_path.read_text(encoding="utf-8")) if indexnow_path.exists() else []
+        dashboard["submission_history"] = sorted(history + indexnow, key=lambda item: item.get("submitted_at", ""))[-100:]
         dashboard_path.write_text(json.dumps(dashboard, indent=2), encoding="utf-8")
     except (OSError, json.JSONDecodeError, TypeError):
         pass
