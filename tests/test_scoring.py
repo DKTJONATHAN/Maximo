@@ -94,6 +94,39 @@ class ScoringTests(unittest.TestCase):
             self.assertIn("how to improve seo", report)
             self.assertIn("Page-level work queue", report)
 
+    def test_daily_report_includes_non_question_query_rows(self):
+        import json
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            property_url = "sc-domain:example.com"
+            slug = collector.safe_name(property_url)
+            (out / f"{slug}-search-performance.json").write_text(json.dumps([
+                {"query": "best accounting software", "page": "https://example.com/accounting",
+                 "clicks": 4, "impressions": 250, "ctr": 0.016, "position": 8.0}
+            ]), encoding="utf-8")
+            collector.write_daily_report([{"property": property_url, "rows_returned": 1}], out, "2026-10-01", "2026-10-28")
+            report = (out / "daily-seo-report.md").read_text(encoding="utf-8")
+            self.assertIn("best accounting software", report)
+            self.assertIn("Search query and landing-page opportunities", report)
+            self.assertIn("250", report)
+
+    def test_write_outputs_exports_raw_query_page_rows(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            collector.write_outputs(
+                "sc-domain:example.com",
+                [{"keys": ["how to choose a laptop", "https://example.com/laptops"],
+                  "clicks": 2, "impressions": 80, "ctr": 0.025, "position": 5.5}],
+                False, "2026-10-01", "2026-10-28", out
+            )
+            raw = out / f"{collector.safe_name('sc-domain:example.com')}-search-performance.json"
+            self.assertTrue(raw.exists())
+            self.assertIn("how to choose a laptop", raw.read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()
