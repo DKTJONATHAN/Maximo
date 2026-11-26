@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "generated_at": null,
+  "period": {"start": null, "end": null},
+  "comparison_period": {"start": null, "end": null},
+  "summary": {
+    "properties_discovered": 0,
+    "properties_collected": 0,
+    "properties_with_errors": 0,
+    "clicks": 0,
+    "previous_clicks": 0,
+    "impressions": 0,
+    "previous_impressions": 0,
+    "sitemap_errors": 0,
+    "sitemap_fetch_errors": 0,
+    "sitemap_warnings": 0,
+    "sitemap_submitted_urls": 0,
+    "sitemap_indexed_urls": 0,
+    "inspected_urls": 0,
+    "not_indexed_urls": 0
+  },
+  "properties": [],
+  "best_performers": [],
+  "biggest_gainers": [],
+  "biggest_decliners": [],
+  "events": [],
+  "submission_history": []
+}
