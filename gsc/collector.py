@@ -538,7 +538,7 @@ def main() -> int:
                     "contents": sitemap.get("contents", []),
                 })
         except Exception as sitemap_exc:
-            safe_error = re.sub(r"https?://\\S+", "[URL]", str(sitemap_exc))
+            safe_error = re.sub(r"https?://\S+", "[URL]", str(sitemap_exc))
             sitemap_results.append({"property": site_url, "errors": 0, "warnings": 0, "error": f"{type(sitemap_exc).__name__}: {safe_error[:240]}"})
         candidates = rows_by_property.get(site_url, [])
         # Inspect a small, high-value sample daily; this uses a fraction of Google's 2,000/day/property quota.
