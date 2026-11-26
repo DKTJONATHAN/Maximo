@@ -15,11 +15,13 @@ on:
     branches: [main]
     paths:
       - "gsc/**"
-      - "scripts/authorize_gsc.py"
+      - "scripts/**"
       - "tests/**"
       - "requirements.txt"
       - ".github/workflows/gsc-sync.yml"
       - "docs/dashboard.html"
+      - ".github/workflows/sitemap-submit.yml"
+      - ".github/workflows/indexnow-submit.yml"
   workflow_dispatch:
     inputs:
       start_date:
