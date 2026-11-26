@@ -172,6 +172,17 @@ The script saves `GSC_WRITE_CLIENT_ID`, `GSC_WRITE_CLIENT_SECRET` and `GSC_WRITE
 
 A separate manual workflow is available under **Actions → Submit URLs through IndexNow**. Add an `INDEXNOW_API_KEY` repository secret, publish a plain-text key file at `https://HOST/KEY.txt` containing exactly the key, then run the workflow with the exact hostname and up to 100 changed HTTPS URLs on that host. The workflow checks the public key file before sending and records the result. Submit only new, updated or deleted URLs, not the whole unchanged site. An HTTP 202 means accepted pending key validation, not indexed.
 
+#### Automatic daily IndexNow notifications
+
+MAXIMO also has an **Automatic IndexNow updates** workflow scheduled daily at 08:17 UTC (11:17 Nairobi time). Once `INDEXNOW_API_KEY` is configured and the same key is published at `https://HOST/KEY.txt` on each participating website, the workflow reads sitemap `lastmod` values and sends only new/updated HTTPS URLs to IndexNow. It remembers the last successfully notified `lastmod` per URL so unchanged pages are not repeatedly submitted. On first setup it only sends URLs whose `lastmod` is within the previous 48 hours. URLs without a valid `lastmod` are skipped. The workflow checks the key file, limits batches to 100 URLs per host/request, records errors and results, and does not update its per-URL state for rejected batches.
+
+To enable it:
+1. Add repository secret `INDEXNOW_API_KEY` in **Settings → Secrets and variables → Actions → Secrets**.
+2. Publish a plain-text file at `https://YOUR-HOST/KEY.txt` containing exactly the secret value, on every website host you want included.
+3. Open **Actions → Automatic IndexNow updates** and run it once to test. Future daily runs are automatic.
+
+This sends notifications to IndexNow participants (including Bing and Yandex), not Google. It is not a Google indexing request.
+
 **Important Google limitation:** Google does not participate in IndexNow. Google's Indexing API is restricted to pages with `JobPosting` or `BroadcastEvent` embedded in a `VideoObject`; it is not a general indexing-request API for ordinary pages. For normal pages, use valid sitemaps, internal links, URL Inspection diagnostics and fix coverage issues. <https://developers.google.com/search/apis/indexing-api/v3/quickstart> <https://indexnow.com/faq>
 
 ## Output and limitations
