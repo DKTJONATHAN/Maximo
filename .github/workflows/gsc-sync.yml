@@ -100,7 +100,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
       - name: Publish dashboard snapshot to GitHub Pages
-        if: ${{ success() && github.event_name != 'pull_request' }}
+        if: ${{ always() && !cancelled() && github.event_name != 'pull_request' && hashFiles('reports/gsc/dashboard.json') != '' }}
         run: |
           test -s reports/gsc/dashboard.json
           mkdir -p docs/data
