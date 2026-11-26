@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: indexnow-submit
+  group: maximo-dashboard-data
   cancel-in-progress: false
 
 jobs:
