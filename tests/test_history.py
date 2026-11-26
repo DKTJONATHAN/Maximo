@@ -40,6 +40,40 @@ class HistoricalComparisonTests(unittest.TestCase):
         self.assertTrue(next(x for x in rows if x["query"] == "new query")["newly_visible"])
         self.assertTrue(next(x for x in rows if x["query"] == "old query")["lost_visibility"])
 
+    def test_report_gives_action_for_forbidden_property(self):
+        import tempfile
+        from pathlib import Path
+        from gsc.collector import write_daily_report
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            write_daily_report([{
+                "property": "sc-domain:example.com",
+                "permission_level": "siteUnverifiedUser",
+                "error": "RuntimeError",
+                "error_message": "Search Console API returned HTTP 403 (reason=forbidden)",
+            }], out, "2026-10-27", "2026-11-23")
+            report = (out / "daily-seo-report.md").read_text(encoding="utf-8")
+            self.assertIn("Users and permissions", report)
+            self.assertIn("at least **Restricted** access", report)
+            self.assertIn("siteUnverifiedUser", report)
+
+    def test_comparison_exports_machine_readable_csv_and_json(self):
+        import tempfile
+        from pathlib import Path
+        from gsc.history import write_comparison_outputs
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            rows = write_comparison_outputs(
+                "sc-domain:example.com",
+                [{"keys": ["query", "https://example.com/"], "clicks": 1, "impressions": 10, "ctr": .1, "position": 4}],
+                [{"keys": ["query", "https://example.com/"], "clicks": 3, "impressions": 20, "ctr": .15, "position": 3}],
+                out,
+                "example",
+            )
+            self.assertEqual(len(rows), 1)
+            self.assertTrue((out / "example-historical-comparison.csv").exists())
+            self.assertTrue((out / "example-historical-comparison.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
