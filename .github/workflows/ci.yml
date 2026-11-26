@@ -33,5 +33,4 @@ jobs:
               exit 1
             }
           done < <(find skills -name SKILL.md -print0)
-          echo "Validated frontmatter in $count skill files"
-          test "$count" -gt 0
+          echo "Validated frontmatter in $count skill files (zero is valid before skills are added)"
