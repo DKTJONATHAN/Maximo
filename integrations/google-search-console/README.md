@@ -15,7 +15,10 @@ There is no Cloudflare Worker, D1 database, always-on server or Cloudflare secre
 ## What it does
 
 - Discovers all Search Console properties visible to the connected Google account.
-- Collects Web search query + page rows for the latest settled 28-day period (default end date: three days ago).\n- Collects the immediately preceding equal-length 28-day period for historical comparison.\n- Reports query/page click and impression changes, CTR movement, ranking-position movement, newly visible/lost query rows and pages with the largest observed click losses.\n- Diagnoses property permission failures and prints the exact Google Search Console access remediation steps.
+- Collects Web search query + page rows for the latest settled 28-day period (default end date: three days ago).
+- Collects the immediately preceding equal-length 28-day period for historical comparison.
+- Reports query/page click and impression changes, CTR movement, ranking-position movement, newly visible/lost query rows and pages with the largest observed click losses.
+- Diagnoses property permission failures and prints the exact Google Search Console access remediation steps.
 - Mines question queries using a configurable regex.
 - Preserves query-to-page attribution.
 - Compares CTR against the same property's observed CTR baseline within integer average-position buckets.
@@ -148,6 +151,9 @@ The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-ac
 - `*-opportunities.csv` — spreadsheet-friendly opportunities.
 - `*-opportunities.json` — complete structured opportunity records.
 - `*-summary.json` — per-property date window, row count and truncation status.
-- `run-summary.json` — overall property success/failure summary, Google permission level and historical collection status.\n- `*-historical-comparison.csv` / `.json` — current-versus-previous query/page comparison, including clicks, impressions, CTR, position and visibility changes.
+- `run-summary.json` — overall property success/failure summary, Google permission level and historical collection status.
+- `*-historical-comparison.csv` / `.json` — current-versus-previous query/page comparison, including clicks, impressions, CTR, position and visibility changes.
 
-Historical declines are directional signals from the query/page rows returned by Search Analytics. A missing row is not proof of deindexing: Google can omit low-volume/anonymized queries and only returns top rows. MAXIMO cannot grant Google Search Console property permissions; for HTTP 403/forbidden errors, add the Google account used by the OAuth refresh token under Search Console → Settings → Users and permissions with at least Restricted access, then rerun collection.\n\nThis version is an analytics collector, not a web dashboard. It does not edit site content, submit sitemaps, publish pages, or modify Search Console settings. Google Search Console API quotas and data availability apply.
+Historical declines are directional signals from the query/page rows returned by Search Analytics. A missing row is not proof of deindexing: Google can omit low-volume/anonymized queries and only returns top rows. MAXIMO cannot grant Google Search Console property permissions; for HTTP 403/forbidden errors, add the Google account used by the OAuth refresh token under Search Console → Settings → Users and permissions with at least Restricted access, then rerun collection.
+
+This version is an analytics collector, not a web dashboard. It does not edit site content, submit sitemaps, publish pages, or modify Search Console settings. Google Search Console API quotas and data availability apply.
