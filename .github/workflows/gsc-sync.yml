@@ -17,6 +17,7 @@ on:
       - "tests/**"
       - "requirements.txt"
       - ".github/workflows/gsc-sync.yml"
+      - "docs/dashboard.html"
   workflow_dispatch:
     inputs:
       start_date:
