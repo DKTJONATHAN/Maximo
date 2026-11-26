@@ -83,7 +83,7 @@ If Google does not issue a refresh token, revoke the app's previous grant from y
 
 Open **GitHub → Maximo → Actions → Google Search Console sync → Run workflow**. Leave dates blank for the default settled 28-day window, or supply `YYYY-MM-DD` start/end dates (maximum 90 days).
 
-The workflow runs tests and discovers properties. **Important:** this repository is public, so it does not upload Search Console report files as GitHub artifacts. Configure the optional private Google Cloud Storage archive to retain and retrieve reports. Artifacts are enabled only when the repository itself is private. It runs automatically each day after the workflow is merged into the repository's default branch. GitHub scheduled workflows run from the default branch, not an unmerged feature branch.
+The workflow runs tests and discovers properties. **Important privacy notice:** this repository is public. Successful runs upload CSV, JSON and Markdown reports as GitHub Actions artifacts for 30 days, and anyone with repository access can download them. Only connect properties whose data you are comfortable making public. For confidential sites or client data, move the workflow to a private repository or configure private Google Cloud Storage with restrictive IAM permissions. It runs automatically each day after the workflow is merged into the repository's default branch. GitHub scheduled workflows run from the default branch, not an unmerged feature branch.
 
 The default question regex and minimum-impression threshold (20) are defined in `gsc/collector.py`. To override them, add repository Variables named `GSC_QUESTION_REGEX` and `GSC_MIN_IMPRESSIONS` under Settings → Secrets and variables → Actions → Variables.
 
@@ -141,7 +141,7 @@ Add these **GitHub repository Variables** (Settings → Secrets and variables �
 - `GCP_SERVICE_ACCOUNT` = `maximo-gsc-github@PROJECT_ID.iam.gserviceaccount.com`
 - `GCS_BUCKET` = your bucket name (without `gs://`)
 
-The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-account private key is needed. If these three variables are not configured, collection still runs, but generated reports remain only on the temporary runner and are discarded at the end of the run. Do not make a public GCS bucket or public artifact the report destination.
+The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-account private key is needed. If these three variables are not configured, the downloadable GitHub Actions artifact remains available for 30 days. Remember that artifacts in this public repository are publicly downloadable.
 
 ## Output and limitations
 
