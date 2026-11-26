@@ -5,7 +5,7 @@ A GitHub Actions-based, read-only Search Console collector for every property ac
 ## Architecture
 
 - **GitHub Actions:** daily scheduled collection, manual runs, tests and report artifacts.
-- **Google Cloud OAuth:** one Desktop OAuth client authorizes the Google account that already has access to the Search Console properties.
+- **Google Cloud OAuth:** a Web OAuth client supports the mobile OAuth Playground flow; the optional local bootstrap script uses a separate Desktop OAuth client.
 - **Search Console API:** read-only property discovery and query/page performance data.
 - **GitHub Actions artifacts:** default report delivery (30-day retention).
 - **Google Cloud Storage (optional):** durable report archive, authenticated with GitHub OIDC Workload Identity Federation (no service-account JSON key).
@@ -25,7 +25,27 @@ There is no Cloudflare Worker, D1 database, always-on server or Cloudflare secre
 
 The ranking baseline is an internal, same-property diagnostic, not a universal industry CTR benchmark or a promise of future clicks. Search Analytics returns top rows rather than a guaranteed exhaustive query universe; low-volume queries can be anonymized, data is delayed, and capped results are marked as truncated.
 
-## 1. Google Cloud setup
+
+## 1. MAXIMO public information pages (GitHub Pages)
+
+The repository includes a static homepage and privacy policy in `docs/`:
+
+- Homepage: `docs/index.html`
+- Privacy policy: `docs/privacy.html`
+
+To publish from a phone:
+
+1. Open the [MAXIMO repository](https://github.com/DKTJONATHAN/Maximo) in your browser.
+2. Open **Settings → Pages**.
+3. Under **Build and deployment**, choose **Deploy from a branch**.
+4. Select branch **main** and folder **/docs**, then tap **Save**.
+5. Wait for the Pages deployment to finish. GitHub will show the published site URL on the Pages settings screen.
+6. Open the homepage and privacy policy URLs to confirm both load publicly over HTTPS.
+7. In Google Cloud **Google Auth Platform → Branding**, set the application homepage URL to the published homepage and the privacy policy URL to the published `privacy.html` page.
+
+**Important Google verification limitation:** this repository is currently private. Publishing GitHub Pages from a private repository may require an eligible paid GitHub plan. Also, the default `github.io` host is a shared GitHub domain, not a domain you own. Google's production brand-verification rules require a homepage and privacy policy on a domain you own and can verify in Search Console. Therefore these pages provide the required content and can be used for initial review/testing, but a `github.io` URL alone is not a guarantee of Google brand verification. For production verification, connect a custom domain you own to GitHub Pages, verify that domain in Search Console, and use the custom-domain URLs in Google Auth Platform.
+
+## 2. Google Cloud setup
 
 1. Create or select a Google Cloud project.
 2. Enable **Google Search Console API**.
@@ -59,7 +79,7 @@ The script opens Google's consent screen in your browser, receives the OAuth cal
 
 If Google does not issue a refresh token, revoke the app's previous grant from your Google Account security settings and run the script again. Never paste OAuth credentials into chat or source control.
 
-## 3. Run the collector
+## 4. Run the collector
 
 Open **GitHub → Maximo → Actions → Google Search Console sync → Run workflow**. Leave dates blank for the default settled 28-day window, or supply `YYYY-MM-DD` start/end dates (maximum 90 days).
 
@@ -67,7 +87,7 @@ The workflow runs tests, discovers properties and uploads CSV/JSON reports as a 
 
 The default question regex and minimum-impression threshold (20) are defined in `gsc/collector.py`. To override them, add repository Variables named `GSC_QUESTION_REGEX` and `GSC_MIN_IMPRESSIONS` under Settings → Secrets and variables → Actions → Variables.
 
-## 4. Optional durable Google Cloud Storage archive
+## 5. Optional durable Google Cloud Storage archive
 
 GitHub artifacts are convenient but expire after 30 days. For long-term history, create a bucket and configure Workload Identity Federation (WIF), so GitHub Actions receives short-lived Google credentials without a service-account key.
 
