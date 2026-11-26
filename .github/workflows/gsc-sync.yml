@@ -40,7 +40,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: gsc-sync
+  group: maximo-dashboard-data
   cancel-in-progress: false
 
 jobs:
