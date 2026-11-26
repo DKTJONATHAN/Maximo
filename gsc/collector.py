@@ -290,7 +290,7 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
         lines.append("| — | No query/page rows returned | — | — | — | — | — | — |")
 
     lines += ["", "## Prioritized SEO action plan", ""]
-    if all_rows:
+    if all_rows or raw_rows:
         lines += [
             "1. **Improve snippets first:** rewrite titles and meta descriptions for high-impression questions with CTR below the same-position baseline.",
             "2. **Strengthen page-one contenders:** for positions 4–10, improve the direct answer, topical coverage, supporting evidence and relevant internal links.",
