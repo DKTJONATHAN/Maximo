@@ -2,6 +2,7 @@
 """Automatically notify IndexNow participants about sitemap URLs with changed lastmod values."""
 from __future__ import annotations
 import gzip
+import io
 import json
 import os
 import re
@@ -72,7 +73,8 @@ def fetch_xml(url: str, host: str) -> ET.Element:
     if len(raw) > MAX_XML_BYTES:
         raise ValueError("Sitemap exceeds the 5 MB inspection limit")
     if url.lower().endswith(".gz"):
-        raw = gzip.decompress(raw)
+        with gzip.GzipFile(fileobj=io.BytesIO(raw)) as compressed:
+            raw = compressed.read(MAX_XML_BYTES + 1)
         if len(raw) > MAX_XML_BYTES:
             raise ValueError("Expanded sitemap exceeds the 5 MB inspection limit")
     return ET.fromstring(raw)
