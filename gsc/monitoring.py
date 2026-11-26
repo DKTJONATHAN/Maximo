@@ -54,18 +54,24 @@ def build_dashboard_data(
         site_sitemaps = [item for item in sitemap_results if item.get("property") == site]
         site_inspections = [item for item in inspection_results if item.get("property") == site]
         sitemap_errors = sum(int(item.get("errors") or 0) for item in site_sitemaps)
+        sitemap_fetch_errors = sum(1 for item in site_sitemaps if item.get("error"))
         sitemap_warnings = sum(int(item.get("warnings") or 0) for item in site_sitemaps)
         inspected = len([item for item in site_inspections if not item.get("error")])
-        not_indexed = [item for item in site_inspections if not item.get("error") and item.get("status") not in {"PASS", "INDEXED"}]
+        not_indexed = [item for item in site_inspections if not item.get("error") and item.get("status") == "FAIL"]
+        inspection_errors = sum(1 for item in site_inspections if item.get("error"))
         if summary.get("error"):
             health = "access_error" if "403" in str(summary.get("error_message", "")) else "collection_error"
             events.append({"level": "error", "property": site, "message": summary.get("error_message") or summary.get("error")})
-        elif sitemap_errors or sitemap_warnings or not_indexed:
+        elif sitemap_errors or sitemap_warnings or sitemap_fetch_errors or not_indexed or inspection_errors:
             health = "needs_attention"
         elif current_impressions or current_clicks:
             health = "healthy"
         else:
             health = "no_search_data"
+        if sitemap_fetch_errors:
+            events.append({"level": "error", "property": site, "message": f"{sitemap_fetch_errors} sitemap status requests failed"})
+        if inspection_errors:
+            events.append({"level": "error", "property": site, "message": f"{inspection_errors} URL inspection requests failed"})
         if sitemap_errors:
             events.append({"level": "error", "property": site, "message": f"{sitemap_errors} sitemap errors reported by Search Console"})
         if sitemap_warnings:
@@ -85,7 +91,7 @@ def build_dashboard_data(
             "impressions_delta": round(current_impressions - previous_impressions, 2),
             "ctr": round(ctr, 6), "position": round(position, 2) if position is not None else None,
             "query_page_rows": len(current), "sitemaps": site_sitemaps,
-            "sitemap_errors": sitemap_errors, "sitemap_warnings": sitemap_warnings,
+            "sitemap_errors": sitemap_errors, "sitemap_warnings": sitemap_warnings, "sitemap_fetch_errors": sitemap_fetch_errors, "inspection_errors": inspection_errors,
             "inspected_urls": inspected, "not_indexed_urls": len(not_indexed),
             "indexing": site_inspections,
             "collection_error": summary.get("error_message") if summary.get("error") else None,
