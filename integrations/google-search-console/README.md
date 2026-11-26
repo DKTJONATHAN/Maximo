@@ -6,7 +6,8 @@ A GitHub Actions-based, read-only Search Console collector for every property ac
 
 - **GitHub Actions:** daily scheduled collection, manual runs, tests and report artifacts.
 - **Google Cloud OAuth:** a Web OAuth client supports the mobile OAuth Playground flow; the optional local bootstrap script uses a separate Desktop OAuth client.
-- **Search Console API:** read-only property discovery and query/page performance data.
+- **Search Console API:** read-only property discovery, query/page performance, sitemap health and sampled URL Inspection results.
+- **GitHub Pages dashboard:** publishes a compact site-health snapshot at `docs/dashboard.html`; the UI checks for a new snapshot every five minutes while collection runs on schedule.
 - **GitHub Actions artifacts:** default report delivery (30-day retention).
 - **Google Cloud Storage (optional):** durable report archive, authenticated with GitHub OIDC Workload Identity Federation (no service-account JSON key).
 
@@ -19,6 +20,9 @@ There is no Cloudflare Worker, D1 database, always-on server or Cloudflare secre
 - Collects the immediately preceding equal-length 28-day period for historical comparison.
 - Reports query/page click and impression changes, CTR movement, ranking-position movement, newly visible/lost query rows and pages with the largest observed click losses.
 - Diagnoses property permission failures and prints the exact Google Search Console access remediation steps.
+- Lists sitemap submission/download dates, Google-reported sitemap warnings/errors and submitted-versus-indexed URL counts.
+- Inspects up to five high-value HTTPS landing-page URLs per property each daily run, recording Google verdict, coverage, canonical and last-crawl status.
+- Publishes best performers, click gainers/decliners, access/indexing/sitemap alerts and submission history in the website command centre.
 - Mines question queries using a configurable regex.
 - Preserves query-to-page attribution.
 - Compares CTR against the same property's observed CTR baseline within integer average-position buckets.
@@ -146,6 +150,30 @@ Add these **GitHub repository Variables** (Settings → Secrets and variables �
 
 The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-account private key is needed. If these three variables are not configured, the downloadable GitHub Actions artifact remains available for 30 days. Remember that artifacts in this public repository are publicly downloadable.
 
+## Website command centre and indexing operations
+
+Open the portal at `https://dktjonathan.github.io/Maximo/dashboard.html`. It shows property-level search metrics, period-over-period movement, top performers, declining sites, sitemap coverage, sitemap errors/warnings, sampled URL inspections, activity alerts and recorded submission attempts. The page checks for a new data snapshot every five minutes; the underlying collector runs on its daily schedule. It is not a real-time Google feed.
+
+The standard collector remains read-only. URL Inspection is limited to a small daily sample of up to five HTTPS landing pages per property, selected from pages with Search Console query data. Google documents a per-property URL Inspection quota of 2,000 requests per day; MAXIMO deliberately uses only a small fraction. This sample is not a full-site crawl or a complete index count. <https://developers.google.com/webmaster-tools/limits>
+
+### Submit a sitemap to Google
+
+A separate manual workflow is available under **Actions → Submit sitemap to Google Search Console**. It uses a separate OAuth grant with the broader `https://www.googleapis.com/auth/webmasters` scope and does not change the read-only token used for daily reporting. To configure it once on a trusted computer with Python and GitHub CLI:
+
+```bash
+python -m pip install -r requirements.txt
+gh auth login
+python scripts/authorize_gsc_write.py --client-secrets /path/to/oauth-desktop-client.json --repo DKTJONATHAN/Maximo
+```
+
+The script saves `GSC_WRITE_CLIENT_ID`, `GSC_WRITE_CLIENT_SECRET` and `GSC_WRITE_REFRESH_TOKEN` as GitHub Actions secrets. Then open **Actions → Submit sitemap to Google Search Console → Run workflow**, enter the exact Search Console property and the full URL of an existing sitemap. The workflow validates that the sitemap belongs to the property, submits it and records success/failure in the dashboard. Sitemap submission tells Google where to find the sitemap; it does not guarantee that any URL is crawled or indexed. Google documents the Sitemaps API submit operation as a `PUT` request. <https://developers.google.com/webmaster-tools/v1/api_reference_index>
+
+### Notify Bing and participating engines with IndexNow
+
+A separate manual workflow is available under **Actions → Submit URLs through IndexNow**. Add an `INDEXNOW_API_KEY` repository secret, publish a plain-text key file at `https://HOST/KEY.txt` containing exactly the key, then run the workflow with the exact hostname and up to 100 changed HTTPS URLs on that host. The workflow checks the public key file before sending and records the result. Submit only new, updated or deleted URLs, not the whole unchanged site. An HTTP 202 means accepted pending key validation, not indexed.
+
+**Important Google limitation:** Google does not participate in IndexNow. Google's Indexing API is restricted to pages with `JobPosting` or `BroadcastEvent` embedded in a `VideoObject`; it is not a general indexing-request API for ordinary pages. For normal pages, use valid sitemaps, internal links, URL Inspection diagnostics and fix coverage issues. <https://developers.google.com/search/apis/indexing-api/v3/quickstart> <https://indexnow.com/faq>
+
 ## Output and limitations
 
 - `*-opportunities.csv` — spreadsheet-friendly opportunities.
@@ -153,7 +181,8 @@ The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-ac
 - `*-summary.json` — per-property date window, row count and truncation status.
 - `run-summary.json` — overall property success/failure summary, Google permission level and historical collection status.
 - `*-historical-comparison.csv` / `.json` — current-versus-previous query/page comparison, including clicks, impressions, CTR, position and visibility changes.
+- `dashboard.json` — compact property performance, sitemap, URL Inspection, health and submission-history snapshot.
 
 Historical declines are directional signals from the query/page rows returned by Search Analytics. A missing row is not proof of deindexing: Google can omit low-volume/anonymized queries and only returns top rows. MAXIMO cannot grant Google Search Console property permissions; for HTTP 403/forbidden errors, add the Google account used by the OAuth refresh token under Search Console → Settings → Users and permissions with at least Restricted access, then rerun collection.
 
-This version is an analytics collector, not a web dashboard. It does not edit site content, submit sitemaps, publish pages, or modify Search Console settings. Google Search Console API quotas and data availability apply.
+The dashboard and daily collector do not edit site content or publish pages. Google sitemap submission and IndexNow are separate, manually triggered workflows with separate credentials/configuration. Google Search Console API quotas and data availability apply.
