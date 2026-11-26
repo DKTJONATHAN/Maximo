@@ -11,6 +11,7 @@ on:
       - "docs/dashboard.html"
       - ".github/workflows/sitemap-submit.yml"
       - ".github/workflows/indexnow-submit.yml"
+      - ".github/workflows/indexnow-auto.yml"
   push:
     branches: [main]
     paths:
