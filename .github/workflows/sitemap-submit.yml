@@ -47,7 +47,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/sitemap-submissions.json docs/data/dashboard.json
+          mkdir -p docs/data
+          git add docs/data/
           if ! git diff --cached --quiet; then
             git commit -m "chore: record sitemap submission result"
             git push
