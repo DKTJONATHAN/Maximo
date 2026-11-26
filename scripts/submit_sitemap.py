@@ -29,7 +29,9 @@ def validate_target(site_url: str, sitemap_url: str) -> None:
         prop = urlparse(site_url)
         if prop.scheme not in {"http", "https"} or not prop.hostname:
             raise ValueError("Search Console property must be a valid URL-prefix property or sc-domain property")
-        if parsed.hostname.lower() != prop.hostname.lower() or not parsed.path.startswith(prop.path or "/"):
+        prop_path = prop.path or "/"
+        path_matches = parsed.path.startswith(prop_path) if prop_path.endswith("/") else (parsed.path == prop_path or parsed.path.startswith(prop_path + "/"))
+        if parsed.hostname.lower() != prop.hostname.lower() or not path_matches:
             raise ValueError("Sitemap URL must be inside the selected URL-prefix property")
 
 
