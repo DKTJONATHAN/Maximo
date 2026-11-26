@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: indexnow-auto
+  group: maximo-dashboard-data
   cancel-in-progress: false
 
 jobs:
