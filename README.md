@@ -12,6 +12,10 @@ MAXIMO is a modular software-engineering agent platform and specialist skills li
 - Integrate databases, APIs, Supabase, GitHub, CI/CD, analytics and SEO.
 - Reuse specialist skills and project knowledge efficiently.
 
+## Search Console operations
+- [Website command centre](https://dktjonathan.github.io/Maximo/dashboard.html) — portfolio metrics, site health, indexing samples, sitemap status and submission activity.
+- [Google Search Console integration guide](integrations/google-search-console/README.md) — OAuth setup, daily collection, sitemap submissions and IndexNow.
+
 ## Start here
 1. [Engineering contract](AGENTS.md)
 2. [Architecture](docs/ARCHITECTURE.md)
