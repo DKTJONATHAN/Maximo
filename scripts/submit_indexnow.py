@@ -27,8 +27,9 @@ def record_result(record: dict) -> None:
     dashboard_path = Path("docs/data/dashboard.json")
     try:
         dashboard = json.loads(dashboard_path.read_text(encoding="utf-8"))
-        sitemap_history = json.loads(Path("docs/data/sitemap-submissions.json").read_text(encoding="utf-8"))
-        dashboard["submission_history"] = (sitemap_history + history)[-100:]
+        sitemap_path = Path("docs/data/sitemap-submissions.json")
+        sitemap_history = json.loads(sitemap_path.read_text(encoding="utf-8")) if sitemap_path.exists() else []
+        dashboard["submission_history"] = sorted(sitemap_history + history, key=lambda item: item.get("submitted_at", ""))[-100:]
         dashboard_path.write_text(json.dumps(dashboard, indent=2), encoding="utf-8")
     except (OSError, json.JSONDecodeError, TypeError):
         pass
