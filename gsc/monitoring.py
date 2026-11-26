@@ -56,6 +56,8 @@ def build_dashboard_data(
         sitemap_errors = sum(int(item.get("errors") or 0) for item in site_sitemaps)
         sitemap_fetch_errors = sum(1 for item in site_sitemaps if item.get("error"))
         sitemap_warnings = sum(int(item.get("warnings") or 0) for item in site_sitemaps)
+        sitemap_submitted = sum(int(part.get("submitted") or 0) for item in site_sitemaps for part in item.get("contents", []))
+        sitemap_indexed = sum(int(part.get("indexed") or 0) for item in site_sitemaps for part in item.get("contents", []))
         inspected = len([item for item in site_inspections if not item.get("error")])
         not_indexed = [item for item in site_inspections if not item.get("error") and item.get("status") == "FAIL"]
         inspection_errors = sum(1 for item in site_inspections if item.get("error"))
@@ -92,6 +94,7 @@ def build_dashboard_data(
             "ctr": round(ctr, 6), "position": round(position, 2) if position is not None else None,
             "query_page_rows": len(current), "sitemaps": site_sitemaps,
             "sitemap_errors": sitemap_errors, "sitemap_warnings": sitemap_warnings, "sitemap_fetch_errors": sitemap_fetch_errors, "inspection_errors": inspection_errors,
+            "sitemap_submitted_urls": sitemap_submitted, "sitemap_indexed_urls": sitemap_indexed,
             "inspected_urls": inspected, "not_indexed_urls": len(not_indexed),
             "indexing": site_inspections,
             "collection_error": summary.get("error_message") if summary.get("error") else None,
@@ -117,6 +120,8 @@ def build_dashboard_data(
             "previous_impressions": round(sum(p["previous_impressions"] for p in properties), 2),
             "sitemap_errors": sum(p["sitemap_errors"] for p in properties),
             "sitemap_warnings": sum(p["sitemap_warnings"] for p in properties),
+            "sitemap_submitted_urls": sum(p["sitemap_submitted_urls"] for p in properties),
+            "sitemap_indexed_urls": sum(p["sitemap_indexed_urls"] for p in properties),
             "inspected_urls": sum(p["inspected_urls"] for p in properties),
             "not_indexed_urls": sum(p["not_indexed_urls"] for p in properties),
         },
