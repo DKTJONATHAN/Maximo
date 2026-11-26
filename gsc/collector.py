@@ -117,8 +117,8 @@ class SearchConsole:
                     reasons = [item.get("reason") for item in error.get("errors", []) if item.get("reason")]
                     reason = reasons[0] if reasons else "unknown"
                     message = str(error.get("message") or "").strip()
-                    message = re.sub(r"https?://\\S+", "[URL]", message)
-                    message = re.sub(r"[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}", "[email]", message)
+                    message = re.sub(r"https?://\S+", "[URL]", message)
+                    message = re.sub(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}", "[email]", message)
                     detail = f" (reason={reason})" + (f": {message[:240]}" if message else "")
                 except (ValueError, AttributeError, TypeError):
                     pass
@@ -229,6 +229,11 @@ def write_daily_report(summaries: list[dict[str, Any]], out_dir: Path, start: st
     if not all_rows:
         lines.append("| — | No qualifying question-query opportunities | — | — | — | — | — | — |")
 
+    failed = [item for item in summaries if item.get("error")]
+    if failed:
+        lines += ["", "## Properties needing attention", ""]
+        for item in failed:
+            lines.append(f"- **{item.get('property', 'Unknown property')}** — {item.get('error_message', item.get('error', 'Collection failed'))}")
     lines += ["", "## Prioritized SEO action plan", ""]
     if all_rows:
         lines += [
@@ -302,8 +307,14 @@ def main() -> int:
             print(f"Property {index}/{len(properties)} processed | rows={len(rows)} | truncated={truncated}")
         except Exception as exc:
             # Avoid printing property URLs or provider error text into public workflow logs.
-            print(f"Property {index}/{len(properties)} failed | {type(exc).__name__}", file=sys.stderr)
-            summaries.append({"property": site_url, "error": type(exc).__name__})
+            safe_error = re.sub(r"https?://\S+", "[URL]", str(exc))
+            safe_error = re.sub(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}", "[email]", safe_error)
+            for secret_name, replacement in (("GSC_CLIENT_ID", "[CLIENT_ID]"), ("GSC_CLIENT_SECRET", "[CLIENT_SECRET]"), ("GSC_REFRESH_TOKEN", "[REFRESH_TOKEN]")):
+                secret_value = os.getenv(secret_name)
+                if secret_value:
+                    safe_error = safe_error.replace(secret_value, replacement)
+            print(f"Property {index}/{len(properties)} failed | {type(exc).__name__}: {safe_error[:300]}", file=sys.stderr)
+            summaries.append({"property": site_url, "error": type(exc).__name__, "error_message": safe_error[:300]})
     (output_dir / "run-summary.json").write_text(json.dumps({
         "start_date": start, "end_date": end, "properties_discovered": len(properties),
         "properties_succeeded": sum("error" not in item for item in summaries),
@@ -317,7 +328,8 @@ def main() -> int:
         prefix = os.getenv("GCS_PREFIX", "maximo/gsc") + f"/{end}/{os.getenv('GSC_RUN_ID', 'manual')}"
         count = upload_to_gcs(output_dir, bucket_name, prefix)
         print(f"Uploaded {count} report files to Google Cloud Storage")
-    return 0 if all("error" not in item for item in summaries) else 2
+    # A partial run is still useful: preserve successful properties and expose failures in the report.
+    return 0
 
 
 if __name__ == "__main__":
