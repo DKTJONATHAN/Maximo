@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MAXIMO is a read-only Google Search Console analytics utility that helps its account owner discover search-query opportunities across their verified properties.">
+  <meta name="theme-color" content="#101827">
+  <title>MAXIMO — Search Console Intelligence</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#111c2e;--line:#26364d;--text:#edf4ff;--muted:#a7b6ca;--accent:#70e1c1;--blue:#8eb7ff}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#193454 0,transparent 42%),var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:var(--blue);text-underline-offset:4px}a:hover{color:var(--accent)}.wrap{width:min(1040px,calc(100% - 40px));margin:auto}
+    header{padding:28px 0;border-bottom:1px solid #ffffff18}.brand{font-weight:800;letter-spacing:.16em;font-size:1.05rem}.brand span{color:var(--accent)}
+    main{padding:76px 0 64px}.eyebrow{color:var(--accent);font-size:.78rem;font-weight:750;letter-spacing:.18em;text-transform:uppercase}
+    h1{max-width:800px;font-size:clamp(2.7rem,7vw,5.4rem);line-height:1.02;letter-spacing:-.055em;margin:18px 0 24px}
+    .lead{max-width:720px;color:#c3d0e1;font-size:clamp(1.08rem,2.5vw,1.28rem)}
+    .pill{display:inline-flex;align-items:center;gap:9px;border:1px solid #315a62;background:#102c31;color:#b8f7e6;padding:7px 12px;border-radius:999px;font-size:.82rem;font-weight:650;margin-top:20px}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}.card{background:linear-gradient(160deg,#142238,#101a2a);border:1px solid var(--line);border-radius:18px;padding:24px}.card .num{color:var(--accent);font-size:.8rem;font-weight:800;letter-spacing:.12em}.card h2{font-size:1.12rem;margin:12px 0 8px}.card p{color:var(--muted);margin:0;font-size:.95rem}
+    .notice{margin-top:24px;padding:20px 22px;border-left:3px solid var(--blue);background:#101b2b;border-radius:0 12px 12px 0;color:var(--muted)}
+    footer{border-top:1px solid #ffffff18;padding:24px 0 40px;color:var(--muted);font-size:.9rem}.links{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:14px}
+    @media(max-width:720px){main{padding:54px 0}.grid{grid-template-columns:1fr;margin-top:38px}.card{padding:20px}.wrap{width:min(100% - 32px,1040px)}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><a class="brand" href="./" aria-label="MAXIMO home" style="color:inherit;text-decoration:none">MAXI<span>MO</span></a></div></header>
+  <main class="wrap">
+    <div class="eyebrow">Search Console intelligence</div>
+    <h1>Turn search data into clearer next steps.</h1>
+    <p class="lead">MAXIMO is a read-only analytics utility for the account owner. It connects to Google Search Console to identify question-based searches, understand which pages receive those searches, and surface opportunities for better content and search performance.</p>
+    <div class="pill"><span class="dot" aria-hidden="true"></span> Read-only access · Owner-operated</div>
+    <section class="grid" aria-label="What MAXIMO does">
+      <article class="card"><div class="num">01 / DISCOVER</div><h2>Find connected properties</h2><p>Lists the Search Console properties that the authorized Google account can access. It does not request access to unrelated Google services.</p></article>
+      <article class="card"><div class="num">02 / ANALYZE</div><h2>Understand search demand</h2><p>Reads Web search query and page performance, including clicks, impressions, click-through rate and average position, for a selected date range.</p></article>
+      <article class="card"><div class="num">03 / PRIORITIZE</div><h2>Surface content opportunities</h2><p>Filters question-style queries and compares observed click-through rates within the same property's position groups to help prioritize review.</p></article>
+    </section>
+    <div class="notice"><strong>Privacy by design.</strong> MAXIMO requests only the Google Search Console read-only scope. Reports are generated for the account owner's use, delivered as private GitHub Actions artifacts, and optionally archived in a Google Cloud Storage bucket configured by the owner. MAXIMO does not sell Google user data or use it for advertising.</div>
+  </main>
+  <footer><div class="wrap"><nav class="links" aria-label="Legal"><a href="./privacy.html">Privacy Policy</a><a href="mailto:jonathanmwaniki07@gmail.com">Contact</a></nav><div>MAXIMO · Independent, owner-operated software. Not affiliated with or endorsed by Google.</div></div></footer>
+</body>
+</html>
