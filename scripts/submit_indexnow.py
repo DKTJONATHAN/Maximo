@@ -42,23 +42,28 @@ def main() -> int:
     args = parser.parse_args()
     key = os.environ.get("INDEXNOW_API_KEY", "")
     host_input = args.host.strip()
-    host = urlparse(host_input if "://" in host_input else "https://" + host_input).hostname or ""
+    host_parsed = urlparse(host_input if "://" in host_input else "https://" + host_input)
+    host = host_parsed.hostname or ""
     urls = list(dict.fromkeys(line.strip() for line in Path(args.urls_file).read_text(encoding="utf-8").splitlines() if line.strip()))
     record = {"channel": "IndexNow", "host": host, "url_count": len(urls), "urls": urls[:100],
               "submitted_at": datetime.now(timezone.utc).isoformat(), "success": False}
     try:
-        if not re.fullmatch(r"[A-Za-z0-9.-]+", host) or ".." in host:
-            raise ValueError("Provide a valid hostname without a path")
+        if (not re.fullmatch(r"[A-Za-z0-9.-]+", host) or ".." in host
+                or host_parsed.path not in {"", "/"} or host_parsed.query or host_parsed.fragment
+                or host_parsed.username or host_parsed.password or host_parsed.port):
+            raise ValueError("Provide a valid hostname without a path or port")
         if not key or not re.fullmatch(r"[A-Za-z0-9-]{8,128}", key):
             raise RuntimeError("INDEXNOW_API_KEY is missing or invalid (8–128 letters, digits or hyphens)")
         if not 1 <= len(urls) <= 100:
             raise ValueError("Provide between 1 and 100 URLs per IndexNow batch")
         for url in urls:
             parsed = urlparse(url)
-            if parsed.scheme != "https" or parsed.hostname != host or parsed.username or parsed.password:
+            if parsed.scheme != "https" or parsed.hostname != host or parsed.username or parsed.password or parsed.port:
                 raise ValueError("Every URL must be HTTPS and belong to the exact submitted host")
         key_url = f"https://{host}/{key}.txt"
         with urllib.request.urlopen(key_url, timeout=20) as response:
+            if urlparse(response.geturl()).hostname != host:
+                raise RuntimeError("IndexNow key file redirected away from the submitted host")
             key_content = response.read(512).decode("utf-8", errors="replace").strip()
         if key_content != key:
             raise RuntimeError(f"IndexNow key file is missing or does not contain the configured key: {key_url}")
