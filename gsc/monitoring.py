@@ -36,6 +36,8 @@ def build_dashboard_data(
     submission_history = submission_history or []
     properties: list[dict[str, Any]] = []
     events: list[dict[str, Any]] = []
+    portfolio_current: list[dict[str, Any]] = []
+    portfolio_history: list[dict[str, Any]] = []
 
     for summary in summaries:
         site = str(summary.get("property") or "")
@@ -44,6 +46,8 @@ def build_dashboard_data(
         slug = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in site).strip("._-")[:90] or "property"
         current = _read(out_dir / f"{slug}-search-performance.json", [])
         historical = _read(out_dir / f"{slug}-historical-comparison.json", [])
+        portfolio_current.extend(current)
+        portfolio_history.extend(historical)
         current_clicks = sum(_number(row, "clicks") for row in current)
         current_impressions = sum(_number(row, "impressions") for row in current)
         previous_clicks = sum(_number(row, "previous_clicks") for row in historical)
@@ -106,6 +110,20 @@ def build_dashboard_data(
     decliners = sorted((p for p in properties if p["query_page_rows"]), key=lambda p: p["clicks_delta"])
     previous_start = next((item.get("previous_start_date") for item in summaries if item.get("previous_start_date")), None)
     previous_end = next((item.get("previous_end_date") for item in summaries if item.get("previous_end_date")), None)
+    # Domain and URL-prefix properties can expose the same query/page row; deduplicate portfolio KPIs.
+    unique_current = {}
+    for row in portfolio_current:
+        key = (row.get("query"), row.get("page"), row.get("clicks"), row.get("impressions"), row.get("ctr"), row.get("position"))
+        unique_current[key] = row
+    unique_history = {}
+    for row in portfolio_history:
+        key = (row.get("query"), row.get("page"), row.get("clicks"), row.get("previous_clicks"),
+               row.get("impressions"), row.get("previous_impressions"), row.get("position"), row.get("previous_position"))
+        unique_history[key] = row
+    portfolio_clicks = sum(_number(row, "clicks") for row in unique_current.values())
+    portfolio_impressions = sum(_number(row, "impressions") for row in unique_current.values())
+    portfolio_previous_clicks = sum(_number(row, "previous_clicks") for row in unique_history.values())
+    portfolio_previous_impressions = sum(_number(row, "previous_impressions") for row in unique_history.values())
     return {
         "schema_version": 1, "generated_at": datetime.now(timezone.utc).isoformat(),
         "period": {"start": start, "end": end},
@@ -114,10 +132,10 @@ def build_dashboard_data(
             "properties_discovered": len(summaries),
             "properties_collected": sum(1 for item in summaries if not item.get("error")),
             "properties_with_errors": sum(1 for item in summaries if item.get("error")),
-            "clicks": round(sum(p["clicks"] for p in properties), 2),
-            "previous_clicks": round(sum(p["previous_clicks"] for p in properties), 2),
-            "impressions": round(sum(p["impressions"] for p in properties), 2),
-            "previous_impressions": round(sum(p["previous_impressions"] for p in properties), 2),
+            "clicks": round(portfolio_clicks, 2),
+            "previous_clicks": round(portfolio_previous_clicks, 2),
+            "impressions": round(portfolio_impressions, 2),
+            "previous_impressions": round(portfolio_previous_impressions, 2),
             "sitemap_errors": sum(p["sitemap_errors"] for p in properties),
             "sitemap_warnings": sum(p["sitemap_warnings"] for p in properties),
             "sitemap_submitted_urls": sum(p["sitemap_submitted_urls"] for p in properties),
