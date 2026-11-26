@@ -110,7 +110,19 @@ class SearchConsole:
                 time.sleep(delay)
         if response is None or not response.ok:
             status = response.status_code if response is not None else "no response"
-            raise RuntimeError(f"Search Console API returned HTTP {status}")
+            detail = ""
+            if response is not None:
+                try:
+                    error = response.json().get("error", {})
+                    reasons = [item.get("reason") for item in error.get("errors", []) if item.get("reason")]
+                    reason = reasons[0] if reasons else "unknown"
+                    message = str(error.get("message") or "").strip()
+                    message = re.sub(r"https?://\\S+", "[URL]", message)
+                    message = re.sub(r"[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}", "[email]", message)
+                    detail = f" (reason={reason})" + (f": {message[:240]}" if message else "")
+                except (ValueError, AttributeError, TypeError):
+                    pass
+            raise RuntimeError(f"Search Console API returned HTTP {status}{detail}")
         return response.json()
 
     def properties(self) -> list[dict[str, str]]:
