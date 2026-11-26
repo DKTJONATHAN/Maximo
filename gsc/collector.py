@@ -560,11 +560,15 @@ def main() -> int:
                 inspection_results.append({"property": site_url, "url": url, "status": "ERROR", "error": f"{type(inspection_exc).__name__}: {safe_error[:240]}"})
         print(f"Monitoring {index}/{len(properties)} | sitemaps={sum(1 for x in sitemap_results if x.get('property') == site_url)} | inspected={len(selected_urls)}")
 
-    submission_history_path = Path("docs/data/sitemap-submissions.json")
-    try:
-        submission_history = json.loads(submission_history_path.read_text(encoding="utf-8")) if submission_history_path.exists() else []
-    except (OSError, json.JSONDecodeError):
-        submission_history = []
+    submission_history: list[dict[str, Any]] = []
+    for history_path in (Path("docs/data/sitemap-submissions.json"), Path("docs/data/indexnow-submissions.json")):
+        try:
+            history = json.loads(history_path.read_text(encoding="utf-8")) if history_path.exists() else []
+            if isinstance(history, list):
+                submission_history.extend(history)
+        except (OSError, json.JSONDecodeError):
+            continue
+    submission_history = sorted(submission_history, key=lambda item: item.get("submitted_at", ""))[-100:]
     dashboard = build_dashboard_data(
         output_dir, summaries, start, end, sitemap_results, inspection_results, submission_history
     )
