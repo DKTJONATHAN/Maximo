@@ -556,7 +556,7 @@ def main() -> int:
             try:
                 inspection_results.append(api.inspect_url(site_url, url))
             except Exception as inspection_exc:
-                safe_error = re.sub(r"https?://\\S+", "[URL]", str(inspection_exc))
+                safe_error = re.sub(r"https?://\S+", "[URL]", str(inspection_exc))
                 inspection_results.append({"property": site_url, "url": url, "status": "ERROR", "error": f"{type(inspection_exc).__name__}: {safe_error[:240]}"})
         print(f"Monitoring {index}/{len(properties)} | sitemaps={sum(1 for x in sitemap_results if x.get('property') == site_url)} | inspected={len(selected_urls)}")
 
