@@ -70,8 +70,12 @@ class ScoringTests(unittest.TestCase):
                 return FakeResponse()
         api = collector.SearchConsole.__new__(collector.SearchConsole)
         api.session = FakeSession()
-        with self.assertRaisesRegex(RuntimeError, r"accessNotConfigured"):
+        with self.assertRaisesRegex(RuntimeError, r"accessNotConfigured") as caught:
             api._request("https://example.test/api")
+        self.assertNotIn("console.example.test", str(caught.exception))
+        self.assertNotIn("owner@example.com", str(caught.exception))
+        self.assertIn("[URL]", str(caught.exception))
+        self.assertIn("[email]", str(caught.exception))
 
     def test_daily_report_contains_prioritized_question_plan(self):
         import json
