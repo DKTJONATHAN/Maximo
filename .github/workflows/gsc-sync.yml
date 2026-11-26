@@ -89,16 +89,15 @@ jobs:
           GSC_QUESTION_REGEX: ${{ vars.GSC_QUESTION_REGEX }}
           GSC_MIN_IMPRESSIONS: ${{ vars.GSC_MIN_IMPRESSIONS }}
         run: python -m gsc.collector
-      - name: Explain secure report delivery
-        if: ${{ success() && github.event.repository.private == false && (vars.GCS_BUCKET == '' || vars.GCP_WIF_PROVIDER == '' || vars.GCP_SERVICE_ACCOUNT == '') }}
-        run: |
-          echo "This repository is public. Search Console report files were not uploaded as public artifacts."
-          echo "Configure private Google Cloud Storage archival to retain and retrieve reports."
-      - name: Upload reports to GitHub Actions artifact (private repositories only)
-        if: ${{ success() && github.event.repository.private == true }}
+      - name: Upload downloadable Search Console reports
+        if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: gsc-reports-${{ github.run_id }}
+          name: maximo-gsc-seo-report-${{ github.run_id }}
           path: reports/gsc/
           if-no-files-found: error
           retention-days: 30
+      - name: Report artifact visibility warning
+        if: ${{ success() && github.event.repository.private == false }}
+        run: |
+          echo "::warning::This repository is public. Anyone who can access the repository can download these Search Console report artifacts. Do not store confidential client or third-party property data here."
