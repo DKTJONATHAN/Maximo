@@ -43,7 +43,7 @@ To publish from a phone:
 6. Open the homepage and privacy policy URLs to confirm both load publicly over HTTPS.
 7. In Google Cloud **Google Auth Platform → Branding**, set the application homepage URL to the published homepage and the privacy policy URL to the published `privacy.html` page.
 
-**Important Google verification limitation:** this repository is currently private. Publishing GitHub Pages from a private repository may require an eligible paid GitHub plan. Also, the default `github.io` host is a shared GitHub domain, not a domain you own. Google's production brand-verification rules require a homepage and privacy policy on a domain you own and can verify in Search Console. Therefore these pages provide the required content and can be used for initial review/testing, but a `github.io` URL alone is not a guarantee of Google brand verification. For production verification, connect a custom domain you own to GitHub Pages, verify that domain in Search Console, and use the custom-domain URLs in Google Auth Platform.
+**Important Google verification limitation:** this repository is public so GitHub Pages can be hosted on the free plan. The default `github.io` host is a shared GitHub domain, not a domain you own. Google's production brand-verification rules may require a homepage and privacy policy on a domain you own and can verify in Search Console. A `github.io` URL alone is not a guarantee of Google brand verification. For production verification, connect a custom domain you own to GitHub Pages, verify that domain in Search Console, and use the custom-domain URLs in Google Auth Platform.
 
 ## 2. Google Cloud setup
 
@@ -83,7 +83,7 @@ If Google does not issue a refresh token, revoke the app's previous grant from y
 
 Open **GitHub → Maximo → Actions → Google Search Console sync → Run workflow**. Leave dates blank for the default settled 28-day window, or supply `YYYY-MM-DD` start/end dates (maximum 90 days).
 
-The workflow runs tests, discovers properties and uploads CSV/JSON reports as a downloadable artifact retained for 30 days. It runs automatically each day after the workflow is merged into the repository's default branch. GitHub scheduled workflows run from the default branch, not an unmerged feature branch.
+The workflow runs tests and discovers properties. **Important:** this repository is public, so it does not upload Search Console report files as GitHub artifacts. Configure the optional private Google Cloud Storage archive to retain and retrieve reports. Artifacts are enabled only when the repository itself is private. It runs automatically each day after the workflow is merged into the repository's default branch. GitHub scheduled workflows run from the default branch, not an unmerged feature branch.
 
 The default question regex and minimum-impression threshold (20) are defined in `gsc/collector.py`. To override them, add repository Variables named `GSC_QUESTION_REGEX` and `GSC_MIN_IMPRESSIONS` under Settings → Secrets and variables → Actions → Variables.
 
@@ -141,7 +141,7 @@ Add these **GitHub repository Variables** (Settings → Secrets and variables �
 - `GCP_SERVICE_ACCOUNT` = `maximo-gsc-github@PROJECT_ID.iam.gserviceaccount.com`
 - `GCS_BUCKET` = your bucket name (without `gs://`)
 
-The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-account private key is needed. If these three variables are not configured, collection still works and reports are available as GitHub artifacts.
+The workflow uploads each run under `maximo/gsc/END_DATE/RUN_ID/`. No service-account private key is needed. If these three variables are not configured, collection still runs, but generated reports remain only on the temporary runner and are discarded at the end of the run. Do not make a public GCS bucket or public artifact the report destination.
 
 ## Output and limitations
 

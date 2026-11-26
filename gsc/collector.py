@@ -200,14 +200,15 @@ def main() -> int:
     if not properties:
         raise RuntimeError("The connected Google account has no accessible Search Console properties")
     summaries: list[dict[str, Any]] = []
-    for prop in properties:
+    for index, prop in enumerate(properties, start=1):
         site_url = prop["siteUrl"]
         try:
             rows, truncated = api.query_all(site_url, start, end)
             summaries.append(write_outputs(site_url, rows, truncated, start, end, output_dir))
-            print(f"Processed property: {site_url} | rows={len(rows)} | truncated={truncated}")
+            print(f"Property {index}/{len(properties)} processed | rows={len(rows)} | truncated={truncated}")
         except Exception as exc:
-            print(f"Property failed: {site_url} | {type(exc).__name__}: {exc}", file=sys.stderr)
+            # Avoid printing property URLs or provider error text into public workflow logs.
+            print(f"Property {index}/{len(properties)} failed | {type(exc).__name__}", file=sys.stderr)
             summaries.append({"property": site_url, "error": type(exc).__name__})
     (output_dir / "run-summary.json").write_text(json.dumps({
         "start_date": start, "end_date": end, "properties_discovered": len(properties),
