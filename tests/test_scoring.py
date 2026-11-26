@@ -57,6 +57,22 @@ class ScoringTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             settled_window("2026-01-01", "2026-05-01")
 
+    def test_api_errors_include_sanitized_google_reason(self):
+        class FakeResponse:
+            status_code = 403
+            ok = False
+            headers = {}
+            def json(self):
+                return {"error": {"message": "API disabled for https://console.example.test and owner@example.com",
+                                  "errors": [{"reason": "accessNotConfigured"}]}}
+        class FakeSession:
+            def request(self, *args, **kwargs):
+                return FakeResponse()
+        api = collector.SearchConsole.__new__(collector.SearchConsole)
+        api.session = FakeSession()
+        with self.assertRaisesRegex(RuntimeError, r"accessNotConfigured"):
+            api._request("https://example.test/api")
+
 
 if __name__ == "__main__":
     unittest.main()
