@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MAXIMO privacy policy explaining how Google Search Console data and OAuth credentials are accessed, used, stored, protected and deleted.">
+  <meta name="theme-color" content="#101827">
+  <title>Privacy Policy — MAXIMO</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#111c2e;--line:#26364d;--text:#edf4ff;--muted:#b5c2d4;--accent:#70e1c1;--blue:#8eb7ff}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0%,#193454 0,transparent 38%),var(--bg);color:var(--text);font:16px/1.72 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:var(--blue);text-underline-offset:4px}a:hover{color:var(--accent)}.wrap{width:min(820px,calc(100% - 40px));margin:auto}
+    header{padding:25px 0;border-bottom:1px solid #ffffff18}.brand{font-weight:800;letter-spacing:.16em;color:var(--text);text-decoration:none}.brand span{color:var(--accent)}
+    main{padding:54px 0 70px}h1{font-size:clamp(2.2rem,6vw,3.5rem);letter-spacing:-.045em;line-height:1.1;margin:0 0 12px}.updated{color:var(--muted);font-size:.92rem;margin-bottom:32px}
+    h2{font-size:1.25rem;margin:34px 0 8px}p,li{color:#c4d0df}ul{padding-left:22px}li{margin:7px 0}.intro{font-size:1.08rem;color:#d5e0ed}
+    .callout{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:24px 0;color:#c4d0df}
+    footer{border-top:1px solid #ffffff18;padding:24px 0 38px;color:var(--muted);font-size:.9rem}
+    @media(max-width:600px){.wrap{width:calc(100% - 32px)}main{padding-top:40px}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><a class="brand" href="./">MAXI<span>MO</span></a></div></header>
+  <main class="wrap">
+    <h1>Privacy Policy</h1>
+    <div class="updated">Effective date: 26 November 2026 · Last updated: 26 November 2026</div>
+    <p class="intro">This policy explains how MAXIMO handles Google user data when its account owner connects Google Search Console. MAXIMO is an owner-operated analytics utility maintained by Jonathan Mwaniki. It is not a public multi-user analytics service.</p>
+
+    <h2>1. Information MAXIMO accesses</h2>
+    <p>When authorized, MAXIMO uses the Google OAuth scope <code>https://www.googleapis.com/auth/webmasters.readonly</code>. Through the Google Search Console API it accesses:</p>
+    <ul>
+      <li>The list of Search Console properties available to the authorizing Google account.</li>
+      <li>Web search performance rows for those properties, including search queries, page URLs, clicks, impressions, click-through rate, average position and the requested date range.</li>
+    </ul>
+    <p>MAXIMO does not request access to Gmail, Google Drive, contacts, calendars, Google Ads, or the ability to modify Search Console settings or data.</p>
+
+    <h2>2. How Google data is used</h2>
+    <p>Search Console data is used only to generate analytics for the account owner: question-query discovery, query-to-page attribution, position-group click-through-rate comparisons, and CSV/JSON reports. These outputs help the owner review content and search-performance opportunities.</p>
+    <p>MAXIMO does not sell Google user data, use it for advertising or ad targeting, use it for credit or lending decisions, or transfer it to data brokers. It does not use the data for purposes unrelated to the features described on the <a href="./">MAXIMO homepage</a>.</p>
+
+    <h2>3. Processing, storage and service providers</h2>
+    <p>Collection runs in GitHub Actions for the MAXIMO repository. Google data is transmitted to the collector over Google's HTTPS API and processed by the workflow to create reports. Reports are uploaded as GitHub Actions artifacts associated with the private repository; the configured workflow retains these artifacts for 30 days before GitHub's automatic expiry.</p>
+    <p>The owner may separately configure Google Cloud Storage (GCS) archival. If enabled, report files are copied to the owner's configured bucket. The owner controls that bucket, its access permissions and any retention or deletion lifecycle rules. GCS archival is optional and is not enabled merely by authorizing Search Console.</p>
+    <p>OAuth client credentials and the refresh token are stored as GitHub Actions repository secrets and used by the workflow to obtain short-lived access tokens. Tokens are not intended to be written to reports or workflow logs. GitHub and Google provide the infrastructure needed to host the repository/workflow and deliver the requested API service, respectively; their own privacy and security terms also apply.</p>
+
+    <h2>4. Sharing and human access</h2>
+    <p>MAXIMO does not make Search Console data public. Access to repository contents, workflow runs and generated artifacts is controlled by the GitHub repository's access permissions. The account owner and any people the owner has authorized to access that private repository may be able to access its reports. If optional GCS archival is enabled, access is controlled by the bucket's IAM permissions. Do not grant repository or bucket access to people who should not see the reports.</p>
+    <p>Data is not otherwise disclosed to third parties except as necessary to operate the Google API, GitHub Actions and any owner-enabled GCS storage, to protect the service, or where disclosure is required by law.</p>
+
+    <h2>5. Retention</h2>
+    <ul>
+      <li><strong>GitHub reports:</strong> workflow artifacts are configured for 30-day retention and then expire automatically, unless deleted earlier.</li>
+      <li><strong>Optional GCS reports:</strong> retained until the owner deletes them or a bucket lifecycle/retention rule removes them.</li>
+      <li><strong>OAuth secrets:</strong> remain in GitHub Actions secrets until the owner replaces or deletes them, or revokes the OAuth grant.</li>
+      <li><strong>Google source data:</strong> remains subject to Google's own retention and product policies in Search Console.</li>
+    </ul>
+
+    <h2>6. Security</h2>
+    <p>MAXIMO requests read-only Search Console access and uses GitHub Actions secrets for OAuth credentials. Workflow permissions are limited to those required to run collection and, when separately configured, authenticate to GCS using GitHub's OIDC identity. No service-account private key is required for the optional GCS integration. The owner should protect their Google and GitHub accounts with strong authentication and review repository collaborators and cloud-storage permissions regularly.</p>
+
+    <h2>7. Your choices and deleting data</h2>
+    <p>The account owner can stop future access by revoking MAXIMO's access in <a href="https://myaccount.google.com/connections">Google Account connections</a>, then deleting the <code>GSC_CLIENT_ID</code>, <code>GSC_CLIENT_SECRET</code> and <code>GSC_REFRESH_TOKEN</code> repository secrets in GitHub. The owner can delete generated workflow artifacts from the repository's Actions area and delete any archived report objects from the configured GCS bucket. Removing the OAuth grant does not automatically delete previously generated reports; those must be deleted from their storage locations.</p>
+    <p>For privacy questions or a deletion request relating to MAXIMO, contact <a href="mailto:jonathanmwaniki07@gmail.com">jonathanmwaniki07@gmail.com</a>.</p>
+
+    <h2>8. Children's privacy</h2>
+    <p>MAXIMO is not designed for children and is not directed to children under 13. It is an owner-operated technical analytics utility.</p>
+
+    <h2>9. Changes to this policy</h2>
+    <p>This policy may be updated if MAXIMO's data access, processing, storage or features change. The revised policy will be published at this URL with an updated effective date. Material changes to Google data use require appropriate renewed notice and consent before the new use begins.</p>
+
+    <h2>10. Contact</h2>
+    <p>Privacy contact: <a href="mailto:jonathanmwaniki07@gmail.com">jonathanmwaniki07@gmail.com</a>.</p>
+    <div class="callout">Google API Services User Data Policy: MAXIMO's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including its Limited Use requirements.</div>
+    <p><a href="./">← Back to MAXIMO homepage</a></p>
+  </main>
+  <footer><div class="wrap">MAXIMO · Independent, owner-operated software. Not affiliated with or endorsed by Google.</div></footer>
+</body>
+</html>
